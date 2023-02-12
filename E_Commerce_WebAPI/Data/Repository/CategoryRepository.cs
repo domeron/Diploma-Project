@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using E_Commerce_WebAPI.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_WebAPI.Data.Repository
 {
-    
+
     public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
     {
         public CategoryRepository(AppDbContext context) : base(context) { }

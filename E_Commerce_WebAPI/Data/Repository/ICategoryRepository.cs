@@ -1,4 +1,6 @@
-﻿namespace E_Commerce_WebAPI.Data.Repository
+﻿using E_Commerce_WebAPI.Model;
+
+namespace E_Commerce_WebAPI.Data.Repository
 {
     public interface ICategoryRepository : IRepositoryBase<Category>
     {

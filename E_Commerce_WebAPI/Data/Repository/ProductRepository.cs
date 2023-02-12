@@ -1,5 +1,5 @@
-﻿using E_Commerce_WebAPI.Data;
-using E_Commerce_WebAPI.Data.Repository;
+﻿using E_Commerce_WebAPI.Data.Repository;
+using E_Commerce_WebAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_WebAPI.Data.Repository

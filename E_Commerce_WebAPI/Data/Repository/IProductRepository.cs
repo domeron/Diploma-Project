@@ -1,5 +1,7 @@
 ﻿
 
+using E_Commerce_WebAPI.Model;
+
 namespace E_Commerce_WebAPI.Data.Repository
 {
     public interface IProductRepository : IRepositoryBase<Product>
