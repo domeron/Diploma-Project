@@ -11359,11 +11359,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\sdu\\diploma_project\\E-Commerce-App\\E_Commerce_WebAPI\\E_Commerce_WebAPI.csproj",
+      "projectUniqueName": "D:\\sdu\\diploma_project\\E-Commerce-App\\src\\E_Commerce_WebAPI\\E_Commerce_WebAPI.csproj",
       "projectName": "E_Commerce_WebAPI",
-      "projectPath": "D:\\sdu\\diploma_project\\E-Commerce-App\\E_Commerce_WebAPI\\E_Commerce_WebAPI.csproj",
+      "projectPath": "D:\\sdu\\diploma_project\\E-Commerce-App\\src\\E_Commerce_WebAPI\\E_Commerce_WebAPI.csproj",
       "packagesPath": "C:\\Users\\domer\\.nuget\\packages\\",
-      "outputPath": "D:\\sdu\\diploma_project\\E-Commerce-App\\E_Commerce_WebAPI\\obj\\",
+      "outputPath": "D:\\sdu\\diploma_project\\E-Commerce-App\\src\\E_Commerce_WebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\domer\\AppData\\Roaming\\NuGet\\NuGet.Config",
