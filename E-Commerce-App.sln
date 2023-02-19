@@ -5,7 +5,13 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E_Commerce_WebAPI", "src\E_Commerce_WebAPI\E_Commerce_WebAPI.csproj", "{43CCD0A7-10AA-4B21-A3A5-70379D655063}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E_Commerce_WebAPI.Tests", "test\E_Commerce_WebAPI.Tests\E_Commerce_WebAPI.Tests.csproj", "{6A981E51-D870-4432-BF0E-2CC74253982B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E_Commerce_WebAPI.Tests", "test\E_Commerce_WebAPI.Tests\E_Commerce_WebAPI.Tests.csproj", "{6A981E51-D870-4432-BF0E-2CC74253982B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC3A8EC3-99BD-4DF8-9B12-92411D551C26}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
