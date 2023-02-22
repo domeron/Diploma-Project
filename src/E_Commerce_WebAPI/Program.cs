@@ -1,6 +1,7 @@
 using E_Commerce_WebAPI.Data;
 using E_Commerce_WebAPI.Data.Repository;
 using E_Commerce_WebAPI.Model.Validation;
+using E_Commerce_WebAPI.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
@@ -21,9 +22,19 @@ builder.Configuration
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
 
 // [EF Core]
-var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlServer(connString));
+
+// [Identity Server]
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddIdentityServer()
+    .AddApiAuthorization<ApplicationUser, AppDbContext>();
+
+builder.Services.AddAuthentication()
+    .AddIdentityServerJwt();
 
 // [Fluent Validation]
 builder.Services.AddValidatorsFromAssemblyContaining<ProductModelValidator>();
@@ -61,12 +72,16 @@ if (env.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseIdentityServer();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

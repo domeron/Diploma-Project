@@ -4,8 +4,10 @@ namespace E_Commerce_WebAPI.Model
 {
     public class Category
     {
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         public string CategoryName { get; set; }
+
+        public List<Product> Products { get; set; }
     }
 }
