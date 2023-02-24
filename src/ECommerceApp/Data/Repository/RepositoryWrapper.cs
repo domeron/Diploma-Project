@@ -6,7 +6,7 @@
         private IProductCategoryRepository _category;
         private IProductRepository _product;
 
-        public IProductCategoryRepository Category {
+        public IProductCategoryRepository ProductCategory {
             get {
                 if (_category == null)
                 {

@@ -2,7 +2,7 @@
 
 namespace ECommerceApp.Data.Repository
 {
-    public interface ICategoryRepository : IRepositoryBase<ProductCategory>
+    public interface IProductCategoryRepository : IRepositoryBase<ProductCategory>
     {
         Task<IEnumerable<ProductCategory>> GetAllCategoriesAsync();
         Task<ProductCategory> GetCategoryByIdAsync(int categoryId);

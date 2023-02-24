@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace E_Commerce_WebAPI.Data.Repository
+namespace ECommerceApp.Data.Repository
 {
     public interface IRepositoryBase<T>
     {

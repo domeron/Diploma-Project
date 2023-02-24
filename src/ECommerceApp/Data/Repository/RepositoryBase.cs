@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace E_Commerce_WebAPI.Data.Repository
+namespace ECommerceApp.Data.Repository
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected AppDbContext dbContext {get;set;}
-        protected RepositoryBase(AppDbContext dbContext)
+        protected ApplicationDbContext dbContext {get;set;}
+        protected RepositoryBase(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

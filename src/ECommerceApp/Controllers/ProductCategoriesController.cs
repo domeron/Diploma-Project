@@ -1,4 +1,5 @@
-﻿using ECommerceApp.Data.Repository;
+﻿using ECommerceApp.Data.Models;
+using ECommerceApp.Data.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApp.Controllers
@@ -52,7 +53,7 @@ namespace ECommerceApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(Category category)
+        public async Task<IActionResult> CreateCategory(ProductCategory category)
         {
             try
             {
@@ -86,7 +87,7 @@ namespace ECommerceApp.Controllers
                     return NotFound();
                 }
 
-                _repository.Category.DeleteCategory(category);
+                _repository.ProductCategory.DeleteCategory(category);
                 await _repository.SaveAsync();
 
                 return Ok();

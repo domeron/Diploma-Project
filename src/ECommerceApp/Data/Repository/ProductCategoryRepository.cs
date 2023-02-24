@@ -1,36 +1,37 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ECommerceApp.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApp.Data.Repository
 {
 
-    public class ProductCategoryRepository : RepositoryBase<Category>, ICategoryRepository
+    public class ProductCategoryRepository : RepositoryBase<ProductCategory>, IProductCategoryRepository
     {
-        public ProductCategoryRepository(AppDbContext context) : base(context) { }
+        public ProductCategoryRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<ProductCategory>> GetAllCategoriesAsync()
         {
             return await FindAll()
-                .OrderBy(category => category.CategoryName)
+                .OrderBy(category => category.ProductCategoryName)
                 .ToListAsync();
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int categoryId)
+        public async Task<ProductCategory> GetCategoryByIdAsync(int categoryId)
         {
-            return await FindByCondition(category => category.CategoryId.Equals(categoryId))
+            return await FindByCondition(category => category.ProductCategoryId.Equals(categoryId))
                 .FirstOrDefaultAsync();
         }
 
-        public void CreateCategory(Category category)
+        public void CreateCategory(ProductCategory category)
         {
             Create(category);
         }
 
-        public void UpdateCategory(Category category) 
+        public void UpdateCategory(ProductCategory category) 
         { 
             Update(category); 
         }
 
-        public void DeleteCategory(Category category)
+        public void DeleteCategory(ProductCategory category)
         {
             Delete(category);
         }
