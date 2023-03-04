@@ -1,4 +1,6 @@
-﻿using ECommerceApp.Data.Models;
+﻿using Azure;
+using Duende.IdentityServer.Models;
+using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,7 @@ using System.Net;
 namespace ECommerceApp.Controllers
 {
     [ApiController]
-    [Route("user")]
+    [Route("User")]
     public class UserController : Controller
     {
         private readonly UserService _userService;
@@ -17,7 +19,7 @@ namespace ECommerceApp.Controllers
             _userService = userService;
         }
 
-        [HttpPost("create")]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateUser(User user)
         {
             if (ModelState.IsValid && user != null)
@@ -26,12 +28,15 @@ namespace ECommerceApp.Controllers
 
                 if (result && exception == null)
                 {
-                    return StatusCode((int)HttpStatusCode.Created);
+                    return StatusCode((int)HttpStatusCode.Created, user);
                 }
 
-                return exception is CouldNotAddUserToDatabase
-                    ? StatusCode((int)HttpStatusCode.NotFound)
-                    : StatusCode((int)HttpStatusCode.InternalServerError, exception.Message);
+                if (exception is UserWithEmailExistsException)
+                    return BadRequest("User with provided email already exists.");
+                else if (exception is CouldNotAddEntityToDatabase)
+                    return NotFound();
+                else
+                    return StatusCode(500, exception.Message);
             }
 
             return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);

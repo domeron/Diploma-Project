@@ -23,11 +23,10 @@ builder.Configuration
 // [CORS]
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: AllowReactOrigin,
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                      });
+    options.AddPolicy(name: AllowReactOrigin,policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
 });
 
 // [Logging Seq]
@@ -55,8 +54,8 @@ builder.Services.AddSwaggerGen(swaggerGenOptions =>
 });
 
 // [Repositories]
-builder.Services.AddScoped(typeof(UserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(UserService), typeof(UserService));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddControllers();
 
 var app = builder.Build();

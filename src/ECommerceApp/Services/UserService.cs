@@ -1,13 +1,14 @@
 ﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Data.Repository;
+using ECommerceApp.Exceptions;
 
 namespace ECommerceApp.Services
 {
     public class UserService
     {
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(UserRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
@@ -16,6 +17,10 @@ namespace ECommerceApp.Services
             if (user == null)
             {
                 return (false, new ArgumentException());
+            }
+            if (await UserByEmailExistsInDatabase(user.Email))
+            {
+                return (false, new UserWithEmailExistsException());
             }
 
             try
@@ -28,5 +33,19 @@ namespace ECommerceApp.Services
                 return (false, exception);
             }
         }
+
+        private async Task<bool> UserByEmailExistsInDatabase(string email)
+        {
+            try
+            {
+                return await _userRepository.GetUserByEmail(email) != null;
+            }
+            catch (UserNotFoundException)
+            {
+                return false;
+            }
+        }
+
+
     }
 }
