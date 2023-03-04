@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using ECommerceApp.Data;
-using ECommerceApp.Models;
-using FluentValidation.AspNetCore;
-using Microsoft.OpenApi.Models;
-using ECommerceApp.Data.Models.Validation;
 using FluentValidation;
+using FluentValidation.AspNetCore;
+using ECommerceApp.Data.Models.Validation;
+using ECommerceApp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,21 +18,15 @@ builder.Configuration
     .AddJsonFile("appsettings.json", false)
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
 
+// [Logging Seq]
+builder.Logging.AddSeq();
+
 // [EF Core]
 var connString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(connString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// [Identity Framework]
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddIdentityServer()
-    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-
-builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
 
 // [Fluent Validation]
 builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
@@ -48,6 +42,7 @@ builder.Services.AddSwaggerGen(swaggerGenOptions =>
     swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo { Title = "E-Commerce WebAPI (ASP.NET Core)", Version = "v1" });
 });
 
+builder.Services.ConfigureRepositoryWrapper();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -76,13 +71,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseIdentityServer();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-app.MapRazorPages();
+app.MapControllers();
 
 app.MapFallbackToFile("index.html");
 

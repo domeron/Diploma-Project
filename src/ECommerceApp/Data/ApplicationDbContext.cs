@@ -1,19 +1,15 @@
-﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Duende.IdentityServer.EntityFramework.Options;
-using ECommerceApp.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using ECommerceApp.Data.Models;
 
 namespace ECommerceApp.Data;
 
-public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
+public class ApplicationDbContext : DbContext
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductCategory> ProductCategories { get; set; }
 
-    public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
-        : base(options, operationalStoreOptions)
+    public ApplicationDbContext(DbContextOptions options)
+        : base(options)
     {}
 
     protected override void OnModelCreating(ModelBuilder builder)
