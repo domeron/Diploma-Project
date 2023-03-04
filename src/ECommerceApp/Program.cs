@@ -7,16 +7,28 @@ using ECommerceApp.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using ECommerceApp.Data.Models.Validation;
-using ECommerceApp.Extensions;
+using ECommerceApp.Data.Repository;
+using ECommerceApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
+var AllowReactOrigin = "_allowReactOrigin";
 
 // [Configuration]
 builder.Configuration
     .AddJsonFile("appsettings.json", false)
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
+
+// [CORS]
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowReactOrigin,
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                      });
+});
 
 // [Logging Seq]
 builder.Logging.AddSeq();
@@ -29,7 +41,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
 // [Fluent Validation]
-builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 builder.Services.AddFluentValidationAutoValidation(options =>
 {
     options.DisableDataAnnotationsValidation = true;
@@ -42,9 +54,10 @@ builder.Services.AddSwaggerGen(swaggerGenOptions =>
     swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo { Title = "E-Commerce WebAPI (ASP.NET Core)", Version = "v1" });
 });
 
-builder.Services.ConfigureRepositoryWrapper();
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+// [Repositories]
+builder.Services.AddScoped(typeof(UserRepository), typeof(UserRepository));
+builder.Services.AddScoped(typeof(UserService), typeof(UserService));
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -69,6 +82,8 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseCors(AllowReactOrigin);
 
 app.UseAuthentication();
 app.UseAuthorization();
