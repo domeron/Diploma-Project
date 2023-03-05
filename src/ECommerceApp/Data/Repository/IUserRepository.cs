@@ -6,5 +6,7 @@ namespace ECommerceApp.Data.Repository
     {
         public Task<bool> CreateUser(User user);
         public Task<User> GetUserByEmail(string email);
+
+        public Task<User> GetUserByEmailAndPassword(string email, string password);
     }
 }

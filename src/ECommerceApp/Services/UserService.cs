@@ -12,7 +12,7 @@ namespace ECommerceApp.Services
         {
             _userRepository = userRepository;
         }
-        public async Task<(bool, Exception)> CreateUser(User user)
+        public async Task<(bool, Exception?)> CreateUser(User user)
         {
             if (user == null)
             {
@@ -34,18 +34,41 @@ namespace ECommerceApp.Services
             }
         }
 
+        public async Task<(User?, Exception?)> GetUserByEmailAndPassword(string email, string password)
+        {
+            if (!await UserByEmailExistsInDatabase(email)) {
+                return (null, new UserWithEmailDontExistException());
+            }
+
+            User user;
+            try
+            {
+                user = await _userRepository.GetUserByEmailAndPassword(email, password);
+            }
+            catch (WrongPasswordException)
+            {
+                return (null, new WrongPasswordException());
+            }
+            catch (UserNotFoundException)
+            {
+                return (null, new UserNotFoundException());
+            }
+
+            return (user, null);
+        }
+
         private async Task<bool> UserByEmailExistsInDatabase(string email)
         {
             try
             {
                 return await _userRepository.GetUserByEmail(email) != null;
             }
-            catch (UserNotFoundException)
+            catch (UserWithEmailDontExistException)
             {
                 return false;
             }
+            catch { return false; }
         }
-
 
     }
 }

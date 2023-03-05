@@ -1,8 +1,10 @@
 ﻿using Azure;
+using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Services;
+using ECommerceApp.Views;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -39,6 +41,26 @@ namespace ECommerceApp.Controllers
                     return StatusCode(500, exception.Message);
             }
 
+            return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginUser(UserLoginForm form)
+        { 
+            if (ModelState.IsValid && !form.Email.IsNullOrEmpty() && !form.Password.IsNullOrEmpty()) { 
+                (User? user, Exception? exception) = await _userService.GetUserByEmailAndPassword(form.Email, form.Password);
+                if (user != null && exception == null)
+                    return Ok(user);
+
+                if (exception is UserWithEmailDontExistException)
+                    return BadRequest("User with provided email is not found.");
+                if (exception is WrongPasswordException)
+                    return BadRequest("Wrong password");
+                else if (exception is UserNotFoundException)
+                    return NotFound("User with provided email and password is not found.");
+                else
+                    return StatusCode(500, exception.Message);
+            }
             return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
         }
     }

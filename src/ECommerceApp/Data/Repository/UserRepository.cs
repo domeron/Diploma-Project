@@ -41,7 +41,22 @@ namespace ECommerceApp.Data.Repository
             }
 
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email) ??
-                   throw new UserNotFoundException();
+                   throw new UserWithEmailDontExistException();
+        }
+
+        public async Task<User> GetUserByEmailAndPassword(string email, string password)
+        {
+            if (email.IsNullOrEmpty() || password.IsNullOrEmpty()) {
+                Console.WriteLine($"Could not find user in GetUserByEmailAndPassword! email = {email}");
+                throw new UserNotFoundException();
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email) ?? 
+                throw new UserWithEmailDontExistException();
+            if (!user.Password.Equals(password)) {
+                throw new WrongPasswordException();
+            }
+            return user;
         }
     }
 }
