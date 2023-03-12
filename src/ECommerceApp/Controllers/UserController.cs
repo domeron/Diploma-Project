@@ -3,6 +3,7 @@ using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
+using ECommerceApp.Models;
 using ECommerceApp.Services;
 using ECommerceApp.Views;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +23,13 @@ namespace ECommerceApp.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateUser(User user)
+        public async Task<IActionResult> CreateUser(UserCreateModel userModel)
         {
-            if (ModelState.IsValid && user != null)
+            if (ModelState.IsValid && userModel != null)
             {
-                (bool result, Exception exception) = await _userService.CreateUser(user);
+                (User? user, Exception? exception) = await _userService.CreateUser(userModel);
 
-                if (result && exception == null)
+                if (user != null && exception == null)
                 {
                     return StatusCode((int)HttpStatusCode.Created, user);
                 }
@@ -48,7 +49,7 @@ namespace ECommerceApp.Controllers
         public async Task<IActionResult> LoginUser(UserLoginForm form)
         { 
             if (ModelState.IsValid && !form.Email.IsNullOrEmpty() && !form.Password.IsNullOrEmpty()) { 
-                (User? user, Exception? exception) = await _userService.GetUserByEmailAndPassword(form.Email, form.Password);
+                (User? user, Exception? exception) = await _userService.GetUserByEmailAndPasswordAsync(form.Email, form.Password);
                 if (user != null && exception == null)
                     return Ok(user);
 
@@ -58,6 +59,46 @@ namespace ECommerceApp.Controllers
                     return BadRequest("Wrong password");
                 else if (exception is UserNotFoundException)
                     return NotFound("User with provided email and password is not found.");
+                else
+                    return StatusCode(500, exception.Message);
+            }
+            return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserCreateModel userModel)
+        {
+            if (ModelState.IsValid && userModel != null)
+            {
+                (User? user, Exception? exception) = await _userService.UpdateUser(id, userModel);
+
+                if (user != null && exception == null)
+                {
+                    return Ok(user);
+                }
+
+                if (exception is UserWithEmailExistsException)
+                    return BadRequest("User with provided email already exists.");
+                else if (exception is UserNotFoundException)
+                    return NotFound("User not found");
+                else
+                    return StatusCode(500, exception.Message);
+            }
+
+            return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
+        }
+
+        [HttpGet("Email/{email}")]
+        public async Task<IActionResult> GetUserByEmailAsync(string email)
+        {
+            if (!email.IsNullOrEmpty()) {
+                (User? user, Exception? exception) = await _userService.GetUserByEmailAsync(email);
+
+                if (user != null && exception == null)
+                    return Ok(user);
+
+                if (exception is UserWithEmailDontExistException)
+                    return BadRequest("User with provided email is not found.");
                 else
                     return StatusCode(500, exception.Message);
             }

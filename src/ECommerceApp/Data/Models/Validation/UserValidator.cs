@@ -19,6 +19,8 @@ namespace ECommerceApp.Data.Models.Validation
                 .NotEmpty();
             RuleFor(u => u.Password)
                 .NotEmpty();
+            RuleFor(u => u.UserRole)
+                .NotEmpty();
         }
     }
 }

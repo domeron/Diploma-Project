@@ -9,6 +9,8 @@ using FluentValidation.AspNetCore;
 using ECommerceApp.Data.Models.Validation;
 using ECommerceApp.Data.Repository;
 using ECommerceApp.Services;
+using ECommerceApp.Models;
+using ECommerceApp.Models.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +43,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // [Fluent Validation]
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+builder.Services.AddScoped<IValidator<UserCreateModel>, UserCreateModelValidator>();
 builder.Services.AddFluentValidationAutoValidation(options =>
 {
     options.DisableDataAnnotationsValidation = true;
@@ -54,8 +57,12 @@ builder.Services.AddSwaggerGen(swaggerGenOptions =>
 });
 
 // [Repositories]
-builder.Services.AddScoped(typeof(UserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+builder.Services.AddScoped(typeof(UserService), typeof(UserService));
+builder.Services.AddScoped(typeof(ISellerRepository), typeof(SellerRepository));
+builder.Services.AddScoped(typeof(SellerService), typeof(SellerService));
+builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+builder.Services.AddScoped(typeof(ProductService), typeof(ProductService));
 builder.Services.AddControllers();
 
 var app = builder.Build();

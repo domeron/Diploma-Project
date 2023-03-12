@@ -1,12 +1,15 @@
 ﻿using ECommerceApp.Data.Models;
+using ECommerceApp.Models;
 
 namespace ECommerceApp.Data.Repository
 {
     public interface IUserRepository
     {
-        public Task<bool> CreateUser(User user);
-        public Task<User> GetUserByEmail(string email);
+        public Task<bool> CreateUser(UserCreateModel model);
+        public Task<User> GetUserByEmailAsync(string email);
+        public Task<User> GetUserByIdAsync(int id);
 
-        public Task<User> GetUserByEmailAndPassword(string email, string password);
+        public Task<User> GetUserByEmailAndPasswordAsync(string email, string password);
+        public Task UpdateUser(int id, UserCreateModel model);
     }
 }

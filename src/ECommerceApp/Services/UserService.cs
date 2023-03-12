@@ -1,6 +1,7 @@
 ﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Data.Repository;
 using ECommerceApp.Exceptions;
+using ECommerceApp.Models;
 
 namespace ECommerceApp.Services
 {
@@ -12,62 +13,68 @@ namespace ECommerceApp.Services
         {
             _userRepository = userRepository;
         }
-        public async Task<(bool, Exception?)> CreateUser(User user)
+        public async Task<(User?, Exception?)> CreateUser(UserCreateModel userModel)
         {
-            if (user == null)
+            if (userModel == null)
             {
-                return (false, new ArgumentException());
-            }
-            if (await UserByEmailExistsInDatabase(user.Email))
-            {
-                return (false, new UserWithEmailExistsException());
+                return (null, new ArgumentException());
             }
 
             try
             {
-                await _userRepository.CreateUser(user);
-                return (true, null);
+                await _userRepository.CreateUser(userModel);
+                var user = await _userRepository.GetUserByEmailAsync(userModel.Email);
+                return (user, null);
             }
-            catch (Exception exception)
-            {
-                return (false, exception);
-            }
+            catch (UserWithEmailExistsException e) { return (null, e);  }
+            catch (Exception exception) { return (null, exception); }
         }
 
-        public async Task<(User?, Exception?)> GetUserByEmailAndPassword(string email, string password)
+        public async Task<(User?, Exception?)> UpdateUser(int id, UserCreateModel model)
         {
-            if (!await UserByEmailExistsInDatabase(email)) {
-                return (null, new UserWithEmailDontExistException());
+            if (model == null)
+                return (null, new ArgumentException());
+            try
+            {
+
+                await _userRepository.UpdateUser(id, model);
+                var user = await _userRepository.GetUserByIdAsync(id);
+                return (user, null);
             }
+            catch (UserNotFoundException e) { return (null, e); }
+            catch (UserWithEmailExistsException e) { return (null, e); }
+            catch (Exception e) { return (null, e); }
+        }
+
+        public async Task<(User?, Exception?)> GetUserByEmailAndPasswordAsync(string email, string password)
+        {
 
             User user;
             try
             {
-                user = await _userRepository.GetUserByEmailAndPassword(email, password);
+                user = await _userRepository.GetUserByEmailAndPasswordAsync(email, password);
             }
-            catch (WrongPasswordException)
-            {
-                return (null, new WrongPasswordException());
-            }
-            catch (UserNotFoundException)
-            {
-                return (null, new UserNotFoundException());
-            }
+            catch (ArgumentException e) { return (null, e); }
+            catch (UserWithEmailDontExistException e) { return (null, e); }
+            catch (WrongPasswordException e) { return (null, e); }
+            catch (Exception e) { return (null, e); }
 
             return (user, null);
         }
 
-        private async Task<bool> UserByEmailExistsInDatabase(string email)
+        public async Task<(User?, Exception?)> GetUserByEmailAsync(string email)
         {
+            User user;
             try
             {
-                return await _userRepository.GetUserByEmail(email) != null;
+                user = await _userRepository.GetUserByEmailAsync(email);
             }
-            catch (UserWithEmailDontExistException)
-            {
-                return false;
-            }
-            catch { return false; }
+            catch (ArgumentException e) { return (null, e); }
+            catch (UserWithEmailDontExistException e) { return (null, e); }
+            catch (UserNotFoundException e) { return (null, e); }
+            catch (Exception e) { return (null, e); }
+
+            return (user, null);
         }
 
     }
