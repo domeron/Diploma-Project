@@ -28,7 +28,7 @@ export default function Account() {
         </div>
         <div className="bg-slate-100">
             <div className="container mx-auto py-6 flex flex-row gap-x-2">
-                <AccountSideTabs onClick={handleTabChange}/>
+                <AccountSideTabs onSelectTab={handleTabChange}/>
                 <div className="grow border">
                     {activeTab === 1 && <AccountSettings user={user} setUser={setUser}/>}
                 </div>
@@ -40,10 +40,10 @@ export default function Account() {
     );
 }
 
-function AccountSideTabs({onClick}) {
+function AccountSideTabs({onSelectTab, user}) {
     return (
         <div className="border w-64 flex flex-col bg-white">
-            <div className="py-2 px-4 border-b-2">Account Settings</div>
+            <div onClick={onSelectTab(1)} className="py-2 px-4 border-b-2">Account Settings</div>
             <div className="py-2 px-4 border-b-2">History of Orders</div>
         </div>
     );

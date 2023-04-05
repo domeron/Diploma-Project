@@ -25,11 +25,9 @@ export default function SellerDashboard() {
     }
 
     return (<>
-        <div>
-            <Header/>
-        </div>
-        <div className="bg-slate-100">
-            <div className="container mx-auto py-6 flex flex-row gap-x-2">
+        <Header/>
+        <div className="bg-slate-100 py-12">
+            <div className="container mx-auto py-6 flex flex-row gap-x-2 items-start">
                 <SellerDashboardSideTabs activeTab={activeTab} handleTabChange={handleTabChange}/>
                 <div className="grow border bg-white py-4 px-6">
                     {activeTab === 1 && <MyProducts/>}
@@ -44,7 +42,7 @@ export default function SellerDashboard() {
 
 function SellerDashboardSideTabs(props) {
     return (
-        <div className="border w-64 flex flex-col bg-white">
+        <div className="border w-96 flex flex-col bg-white">
             <div className={`py-2 px-4 border-b-2 hover:bg-slate-100 ${props.activeTab === 1 && 'bg-gray-200'}`}
             onClick={() => props.handleTabChange(1)}>My Products</div>
             <div className={`py-2 px-4 border-b-2 hover:bg-slate-100 ${props.activeTab === 2 && 'bg-gray-200'}`}

@@ -3,7 +3,6 @@ using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Services;
-using ECommerceApp.Views;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

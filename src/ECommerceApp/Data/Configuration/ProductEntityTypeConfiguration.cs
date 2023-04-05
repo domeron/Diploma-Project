@@ -14,6 +14,9 @@ namespace ECommerceApp.Data.Configuration
             builder.Property(p => p.Quantity).IsRequired();
             builder.HasOne(p => p.Seller).WithMany(s => s.Products)
                 .HasForeignKey(p => p.SellerId);
+            builder.HasOne(p => p.Category)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.CategoryId);
         }
     }
 }

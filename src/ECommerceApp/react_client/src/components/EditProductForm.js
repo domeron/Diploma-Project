@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import axios from "axios";
+import CategoryMenuForm from "./CategoryMenuForm";
 
 export default function EditProductForm({product, onReturn}) {
     const { register, setError, setValue, reset, handleSubmit, formState: { errors } } = useForm(
@@ -9,7 +11,8 @@ export default function EditProductForm({product, onReturn}) {
             productDescription: product.productDescription,
             priceUSD: product.priceUSD,
             quantity: product.quantity,
-            sellerId: product.sellerId
+            sellerId: product.sellerId,
+            categoryId: product.categoryId
         }}
     );
 
@@ -49,7 +52,7 @@ export default function EditProductForm({product, onReturn}) {
     return (
         <>
         <form onSubmit={handleSubmit(onSubmit)} 
-            className="flex flex-col py-2 w-96">
+            className="flex flex-col py-2">
 
             <div className="form-group flex flex-col pb-2 w-64">
                 <label htmlFor="productName" className="fw-semibold mb-2">Product Name:</label>
@@ -62,11 +65,18 @@ export default function EditProductForm({product, onReturn}) {
             <div className="form-group flex flex-col pb-2">
                 <label htmlFor="productDescription" className="fw-semibold mb-2">Description:</label>
                 <textarea name="productDescription" {...register("productDescription", 
-                {required: 'This field is required', } )} className="rounded-md px-2 py-1 border-2"/>
+                {required: 'This field is required', } )} 
+                className="rounded-md px-2 py-1 border-2 max-h-64"/>
                 <ErrorMessage errors={errors} name="productDescription"
                 render={({ message }) => <p className="text-red-500 italic text-right">{message}</p>}/>
             </div>
 
+            {/* CATEGORIES */}
+            <div className="form-group pb-2">
+                <h2 htmlFor="productCategory" className="fw-semibold mb-2">Category:</h2>
+                <CategoryMenuForm initialCategory={product.category}
+                onCategoryChoose={(categoryId) => setValue('categoryId', categoryId)}/>
+            </div>
 
             <div className="form-group flex flex-col pb-2 w-64">
                 <label htmlFor="priceUSD" className="fw-semibold mb-2">Price (USD):</label>

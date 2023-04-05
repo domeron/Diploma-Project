@@ -45,12 +45,16 @@ export default function Login() {
         reset();
     }
 
+    function handleForgotPassword() {
+        navigate('/Forget-Password');   
+    }
+
     return (
         <>
         <div>
             <Header/>
         </div>
-        <div className="bg-slate-100">
+        <div className="bg-slate-100 py-12">
             <div className="container mx-auto py-6">
                 <h1 className="text-2xl font-semibold">
                     {userLogin ? ('Login'): ('Seller Login')}
@@ -61,6 +65,8 @@ export default function Login() {
                         <>
                         <FormGroup name="email" label="E-mail:" type="email" errors={errors} register={register}/>
                         <FormGroup name="password" label="Password:" type="password" errors={errors} register={register}/>
+                        <p className="underline cursor-pointer text-gray-500"
+                        onClick={handleForgotPassword}>Forgot Password?</p>
                         </>
                     ) : (
                         <>

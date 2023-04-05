@@ -34,10 +34,8 @@ export default function Register() {
 
     return (
         <>
-        <div>
-            <Header/>
-        </div>
-        <div className="bg-slate-100">
+        <Header/>
+        <div className="bg-slate-100 py-12">
             <div className="container mx-auto py-6">
                 <h1 className="text-2xl font-semibold">Register</h1>
                 <form onSubmit={handleSubmit(onSubmit)} 

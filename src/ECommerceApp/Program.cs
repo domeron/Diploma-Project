@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using ECommerceApp.Data;
@@ -11,6 +8,8 @@ using ECommerceApp.Data.Repository;
 using ECommerceApp.Services;
 using ECommerceApp.Models;
 using ECommerceApp.Models.Validation;
+using ECommerceApp.Configuration;
+using ECommerceApp.Utils.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +20,13 @@ var AllowReactOrigin = "_allowReactOrigin";
 builder.Configuration
     .AddJsonFile("appsettings.json", false)
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
+
+// [Email Sender]
+var emailConfig = builder.Configuration
+    .GetSection("EmailConfiguration")
+    .Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // [CORS]
 builder.Services.AddCors(options =>
@@ -61,8 +67,15 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(UserService), typeof(UserService));
 builder.Services.AddScoped(typeof(ISellerRepository), typeof(SellerRepository));
 builder.Services.AddScoped(typeof(SellerService), typeof(SellerService));
+builder.Services.AddScoped(typeof(IProductCategoryRepository), typeof(ProductCategoryRepository));
+builder.Services.AddScoped(typeof(ProductCategoryService), typeof(ProductCategoryService));
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
 builder.Services.AddScoped(typeof(ProductService), typeof(ProductService));
+builder.Services.AddScoped(typeof(IProductImageRepository), typeof(ProductImageRepository));
+builder.Services.AddScoped(typeof(ProductImageService), typeof(ProductImageService));
+builder.Services.AddScoped(typeof(IProductReviewRepository), typeof(ProductReviewRepository));
+builder.Services.AddScoped(typeof(ProductReviewService), typeof(ProductReviewService));
+builder.Services.AddScoped(typeof(IUserCartRepository), typeof(UserCartRepository));
 builder.Services.AddControllers();
 
 var app = builder.Build();

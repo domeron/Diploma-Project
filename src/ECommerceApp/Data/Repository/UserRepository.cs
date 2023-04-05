@@ -46,7 +46,13 @@ namespace ECommerceApp.Data.Repository
                 throw new ArgumentException();
             }
 
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email) ??
+            return await _context.Users.Where(u => u.Email == email)
+                .Include(u => u.Cart)
+                .ThenInclude(uc => uc.Product)
+                .ThenInclude(p => p.Category)
+                .ThenInclude(c => c.ParentCategory)
+                .ThenInclude(c => c.ParentCategory)
+                .FirstOrDefaultAsync() ??
                    throw new UserWithEmailDontExistException();
         }
 
@@ -57,8 +63,7 @@ namespace ECommerceApp.Data.Repository
                 throw new ArgumentException();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email) ?? 
-                throw new UserWithEmailDontExistException();
+            var user = await GetUserByEmailAsync(email);
             if (!user.Password.Equals(password)) {
                 throw new WrongPasswordException();
             }

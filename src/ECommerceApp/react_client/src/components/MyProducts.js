@@ -43,6 +43,31 @@ export default function MyProducts() {
         getMyProducts();
     }
 
+    async function handleSearchChange(e) {
+        if(e.target.value === '') { 
+            await getMyProducts();
+            return;
+        }
+        await axios.get(`https://localhost:7077/Product/Seller/Search/${user.sellerId}/${e.target.value}`)
+        .then((response) => {
+            console.log(response.data);
+            setMyProducts(response.data);
+          })
+          .catch(function (error) {
+            if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              console.log(error.request);
+            } else {
+              console.log('Error', error.message);
+            }
+            console.log(error.config);
+          });
+    }
+
+
     return (
         <div>
 
@@ -56,10 +81,14 @@ export default function MyProducts() {
                 <EditProductForm product={editingProduct} onReturn={handleBackToMyProducts}/>
             </>) : 
             (<>
-                <div className="text-xl font-semibold">My Products</div>
+                <div className="text-xl font-semibold mb-4">My Products</div>
+                <form className="flex gap-2 mb-8" onSubmit={(e) => {e.preventDefault()}}>
+                    <input type="search" placeholder="search" className="py-2 px-2 border-2 rounded-md grow"
+                    onChange={handleSearchChange}/>
+                </form>
                 {myProducts && myProducts.length > 0 ? (
                     <> {myProducts.map((product) => {
-                        return <ProductListItem product={product} handleEdit={handleEdit}/>
+                        return <ProductListItem key={product.productId} product={product} handleEdit={handleEdit}/>
                     })} </>
                 ) : (
                     <> <h1>No products</h1> </>
@@ -71,29 +100,35 @@ export default function MyProducts() {
 
 function ProductListItem({product, handleEdit}) {
     return (
-        <div key={product.productId} className="border-2 mt-2 px-4 py-2 rounded-md flex">
-            <div className="w-4/6">
-                <p className="text-lg font-semibold">{product.productName}</p>
+        <div className="flex gap-6 border-2 mt-2 px-4 py-4 rounded-md">
+            <div className="w-40 h-40">
+                <img className="object-contain h-40 w-40"
+                alt="product image" src={`https://localhost:7077/${product.frontImagePath}`}/>
+            </div>
+            <div className="grow">
+                <div className="flex justify-between">
+                    <p className="text-lg font-semibold">{product.productName}</p>
+                    <div className="flex gap-2">    
+                        <button className="bg-blue-500 text-white py-1 px-2 w-16 rounded-md hover:bg-sky-700">View</button>
+                        <button className="bg-blue-500 text-white py-1 px-4 w-16 rounded-md hover:bg-sky-700"
+                            onClick={() => handleEdit(product)}>Edit</button>
+                    </div>
+                </div>
+                <div className="text-sm breadcrumbs">
+                    <ul>
+                        {product.category.parent && product.category.parent.parent && <li>{product.category.parent.parent.categoryName}</li>}
+                        {product.category.parent && <li>{product.category.parent.categoryName}</li>}
+                        <li>{product.category.categoryName}</li> 
+                    </ul>
+                </div>
                 <div className="flex gap-x-4">
                     <p>Quantity: {product.quantity}</p>
                     <p>Price: {product.priceUSD}$</p>
                 </div>
-                <div className="collapse">
-                    <input type="checkbox" /> 
-                    <div className="flex collapse-title text-base text-gray-500 underline">
-                        Description
-                    </div>
-                    <div className="collapse-content mt-2"> 
-                        <p className="text-sm px-4 py-2 border-2 rounded-md">{product.productDescription}</p>
-                    </div>
-                </div>
-            </div>
-            <div className="grow flex flex-col justify-end">
-                <div className="flex gap-2 justify-end">    
-                    <button className="bg-blue-500 text-white py-1 px-2 w-16 rounded-md hover:bg-sky-700">View</button>
-                    <button className="bg-blue-500 text-white py-1 px-4 w-16 rounded-md hover:bg-sky-700"
-                        onClick={() => handleEdit(product)}>Edit</button>
-                </div>
+                {/* <div className="max-w-prose">
+                    <p>Description</p>
+                    <p>{product.productDescription}</p>
+                </div> */}
             </div>
         </div>
     );
