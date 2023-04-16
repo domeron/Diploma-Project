@@ -13,6 +13,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<ProductReview> ProductReviews{ get; set; }
     public DbSet<UserCart> UserCarts{ get; set; }
+    public DbSet<PaymentCard> PaymentCards { get; set; }
+    public DbSet<Address> Addresses { get; set; }
 
     public ApplicationDbContext(DbContextOptions options)
         : base(options)
@@ -27,5 +29,6 @@ public class ApplicationDbContext : DbContext
         new ProductEntityTypeConfiguration().Configure(builder.Entity<Product>());
         new UserCartEntityTypeConfiguration().Configure(builder.Entity<UserCart>());
         new ProductImageEntityTypeConfiguration().Configure(builder.Entity<ProductImage>());
+        new AddressEntityConfiguration().Configure(builder.Entity<Address>());
     }
 }

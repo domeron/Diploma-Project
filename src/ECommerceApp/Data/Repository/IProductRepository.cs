@@ -12,6 +12,8 @@ namespace ECommerceApp.Data.Repository
 
         public IAsyncEnumerable<Product> GetProductsBySellerIdAsync(int sellerId);
         public IAsyncEnumerable<Product> GetAllProductsAsync();
+
+        public IAsyncEnumerable<Product> GetAllProductsInCategory(int categoryId);
         public IAsyncEnumerable<Product> GetSellersProductsStartingWithPatternAsync(int sellerId, string pattern);
         public IAsyncEnumerable<Product> GetProductsStartingWithPatternAsync(int? categoryId, string? sortOption, string pattern);
         public Task UpdateProduct(int id, ProductCreateModel productModel);

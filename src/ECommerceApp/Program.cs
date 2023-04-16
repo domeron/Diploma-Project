@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using ECommerceApp.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using ECommerceApp.Data.Models.Validation;
 using ECommerceApp.Data.Repository;
 using ECommerceApp.Services;
 using ECommerceApp.Models;
@@ -43,12 +42,12 @@ builder.Logging.AddSeq();
 // [EF Core]
 var connString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(connString));
+    options => options.UseSqlServer(connString), ServiceLifetime.Transient);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
 // [Fluent Validation]
-builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UserCreateModelValidator>();
 builder.Services.AddScoped<IValidator<UserCreateModel>, UserCreateModelValidator>();
 builder.Services.AddFluentValidationAutoValidation(options =>
 {
@@ -76,6 +75,8 @@ builder.Services.AddScoped(typeof(ProductImageService), typeof(ProductImageServi
 builder.Services.AddScoped(typeof(IProductReviewRepository), typeof(ProductReviewRepository));
 builder.Services.AddScoped(typeof(ProductReviewService), typeof(ProductReviewService));
 builder.Services.AddScoped(typeof(IUserCartRepository), typeof(UserCartRepository));
+builder.Services.AddScoped(typeof(PaymentService), typeof(PaymentService));
+builder.Services.AddScoped(typeof(IPaymentCardRepository), typeof(PaymentCardRepository));
 builder.Services.AddControllers();
 
 var app = builder.Build();

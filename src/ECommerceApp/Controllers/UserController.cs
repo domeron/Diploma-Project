@@ -1,13 +1,11 @@
-﻿using Azure;
-using Duende.IdentityServer.Extensions;
-using Duende.IdentityServer.Models;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Services;
 using ECommerceApp.Utils.EmailSender;
 using ECommerceApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Net;
 
@@ -35,8 +33,6 @@ namespace ECommerceApp.Controllers
 
                 if (user != null && exception == null)
                 {
-                    var message = new Message(new string[] { "domeron02@gmail.com" }, "test email", "this is the content form our email.");
-                    _emailSender.SendEmail(message);
                     return StatusCode((int)HttpStatusCode.Created, user);
                 }
 
@@ -135,7 +131,19 @@ namespace ECommerceApp.Controllers
             }
         }
 
-        [HttpDelete("Cart/Delete/{userId}/{productId}")]
+        [HttpGet("Cart/{userId}/HasProduct/{productId}")]
+        public async Task<IActionResult> IsProductExistInUserCart(int userId, int productId)
+        {
+            (bool exist, Exception? e) = await _userService.IsProductExistInUserCart(userId, productId);
+
+            if (e == null) return Ok(exist);
+
+            if (e is UserNotFoundException) return BadRequest("User not found");
+            else if (e is ProductNotFoundException) return BadRequest("Product not found exception");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpDelete("Cart/{userId}/{productId}")]
         public async Task<IActionResult> DeleteProductFromUserCart(int userId, int productId) {
             if (userId < 0 || productId < 0) return BadRequest("userId or productId is less than zero");
 

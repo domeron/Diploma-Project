@@ -2,7 +2,7 @@
 using ECommerceApp.Models;
 using ECommerceApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Duende.IdentityServer.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceApp.Data.Repository
 {
@@ -161,6 +161,19 @@ namespace ECommerceApp.Data.Repository
             await foreach (var product in products.AsAsyncEnumerable()) 
             { 
                 yield return product; 
+            }
+        }
+
+        public async IAsyncEnumerable<Product> GetAllProductsInCategory(int categoryId) {
+            var products = _context.Products
+                .Where(p => p.CategoryId == categoryId
+                || p.Category.ParentCategoryId == categoryId
+                || p.Category.ParentCategory.ParentCategoryId == categoryId)
+                .Include(p => p.Category)
+                .AsAsyncEnumerable();
+
+            await foreach (var product in products) {
+                yield return product;
             }
         }
 

@@ -54,10 +54,10 @@ namespace ECommerceApp.Data.Repository
 
         public async Task<bool> IsProductExistsInCart(int userId, int productId)
         {
-            var userCart = await _context.UserCarts.Where(uc => uc.UserId == userId && uc.ProductId == productId).FirstOrDefaultAsync() ?? null;
-            if (userCart != null)
-                return true;
-            else return false;
+            return await _context.UserCarts
+                .Where(uc => uc.UserId == userId 
+                && uc.ProductId == productId)
+                .AnyAsync();
         }
     }
 }

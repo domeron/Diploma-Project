@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerceApp.Controllers
 {
     [ApiController]
-    [Route("ProductCategory")]
+    [Route("Category")]
     public class ProductCategoryController : Controller
     {
         private readonly ProductCategoryService _service;
@@ -19,12 +19,12 @@ namespace ECommerceApp.Controllers
 
         [HttpGet]
         [Route("Top")]
-        public async IAsyncEnumerable<ProductCategoryWithChildrenViewModel> GetTopCategoriesWithChildren() {
+        public async IAsyncEnumerable<ProductCategoryViewModel> GetTopCategoriesWithChildren() {
             var categories = _service.GetTopCategories();
 
             await foreach (var category in categories)
             {
-                yield return new ProductCategoryWithChildrenViewModel(category);
+                yield return new ProductCategoryViewModel(category);
             }
         }
 
@@ -34,7 +34,7 @@ namespace ECommerceApp.Controllers
             (ProductCategory? category, Exception? e) = await _service.GetCategoryByIdAsync(categoryId);
 
             if (category != null && e == null)
-                return Ok(new ProductCategoryWithParentsViewModel(category));
+                return Ok(new ProductCategoryViewModel(category));
             else if (e is ProductCategoryNotFound) return BadRequest("Category not found");
             else return StatusCode(500, e.StackTrace);
         }

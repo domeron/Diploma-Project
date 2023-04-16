@@ -5,19 +5,8 @@ module.exports = {
   theme: {
     fontFamily: {
       sans: [
-        "Inter var, sans-serif",
-        { fontFeatureSettings: '"cv11", "ss01"' },
+        "Lora , serif",
       ],
     },
-  },
-  plugins: [require("daisyui")],
-  daisyui: {
-    styled: true,
-    themes: false,
-    base: false,
-    utils: false,
-    logs: false,
-    rtl: false,
-    prefix: "",
-  },
+  }
 }

@@ -1,5 +1,5 @@
-﻿using Duende.IdentityServer.Extensions;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceApp.ViewModels
 {
@@ -16,7 +16,7 @@ namespace ECommerceApp.ViewModels
         public string CreatedOn { get; set; }
         public string FrontImagePath { get; set; }
         public ICollection<string>? ImagesURL { get; set; }
-        public ProductCategoryWithParentsViewModel Category { get; set; }
+        public ProductCategoryViewModel Category { get; set; }
 
         public ProductViewModel(Product product)
         { 
@@ -29,7 +29,10 @@ namespace ECommerceApp.ViewModels
             Rating = product.Rating;
             ReviewsCount = product.ReviewsCount;
             CreatedOn = product.CreatedOn.ToString("MMMM dd, yyyy");
-            Category = new ProductCategoryWithParentsViewModel(product.Category);
+            Category = new ProductCategoryViewModel(new() { 
+                Id = product.CategoryId,
+                CategoryName = product.Category.CategoryName,
+            });
             FrontImagePath = product.FrontImagePath;
 
             if (!product.ProductImages.IsNullOrEmpty()) {

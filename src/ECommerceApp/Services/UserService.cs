@@ -102,6 +102,21 @@ namespace ECommerceApp.Services
             catch (Exception e) { return (false, e); }
         }
 
+        public async Task<(bool, Exception?)> IsProductExistInUserCart(int userId, int productId) {
+            try
+            {
+                var user = _userRepository.GetUserByIdAsync(userId);
+                var product = _productRepository.GetProductByIdAsync(productId);
+
+                var exist = await _userCartRepository.IsProductExistsInCart(userId, productId);
+
+                return (exist, null);
+            }
+            catch (UserNotFoundException e) { return (false, e); }
+            catch (ProductNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
         public async Task<(bool, Exception?)> DeleteProductFromUserCart(int userId, int productId) {
             try
             {

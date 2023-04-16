@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace ECommerceApp.Models
+﻿namespace ECommerceApp.Models
 {
     public class ProductCreateModel
     {

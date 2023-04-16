@@ -1,5 +1,5 @@
-﻿using Duende.IdentityServer.Extensions;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceApp.ViewModels
 {

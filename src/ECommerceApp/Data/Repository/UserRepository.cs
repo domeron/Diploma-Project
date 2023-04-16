@@ -1,8 +1,8 @@
-﻿using Duende.IdentityServer.Extensions;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceApp.Data.Repository
 {

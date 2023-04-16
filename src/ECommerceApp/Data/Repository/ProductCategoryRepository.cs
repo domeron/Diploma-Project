@@ -31,6 +31,8 @@ namespace ECommerceApp.Data.Repository
                 .Where(c => c.Id == id)
                 .Include(c => c.ParentCategory)
                 .ThenInclude(c => c.ParentCategory)
+                .Include(c => c.ChildCategories)
+                .ThenInclude(c => c.ChildCategories)
                 .FirstOrDefaultAsync()
 
                 ?? throw new ProductCategoryNotFound();

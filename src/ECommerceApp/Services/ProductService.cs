@@ -1,11 +1,11 @@
-﻿using Duende.IdentityServer.Extensions;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Data.Repository;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Utils.File;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceApp.Services
 {
@@ -73,6 +73,14 @@ namespace ECommerceApp.Services
 
             await foreach (var product in products)
             {
+                yield return product;
+            }
+        }
+
+        public async IAsyncEnumerable<Product> GettAllProductsInCategory(int categoryId) {
+            var products = _repository.GetAllProductsInCategory(categoryId);
+
+            await foreach (var product in products) {
                 yield return product;
             }
         }

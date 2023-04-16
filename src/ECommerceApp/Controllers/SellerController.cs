@@ -1,9 +1,9 @@
-﻿using Duende.IdentityServer.Extensions;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
 namespace ECommerceApp.Controllers

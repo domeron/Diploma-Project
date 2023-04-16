@@ -9,6 +9,8 @@
         public string Password { get; set; }
         public string UserRole { get; set; }
 
+        public Address? ShippingAddress { get; set; }
+        public int? ShippingAddressId { get; set; }
         public ICollection<ProductReview> ProductReviews { get; set; }
         public ICollection<UserCart> Cart { get; set; }
     }

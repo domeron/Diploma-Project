@@ -2,7 +2,6 @@
 using ECommerceApp.Data.Repository;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
-using static Duende.IdentityServer.Models.IdentityResources;
 
 namespace ECommerceApp.Services
 {

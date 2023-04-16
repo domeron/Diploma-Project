@@ -1,10 +1,10 @@
-﻿using Duende.IdentityServer.Extensions;
-using ECommerceApp.Data.Models;
+﻿using ECommerceApp.Data.Models;
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Services;
 using ECommerceApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
 namespace ECommerceApp.Controllers
@@ -54,6 +54,16 @@ namespace ECommerceApp.Controllers
             var products = _service.GetProductsBySellerIdAsync(sellerId);
 
             await foreach (var product in products) { 
+                yield return new ProductViewModel(product);
+            }
+        }
+
+        [HttpGet("Category/{categoryId}")]
+        public async IAsyncEnumerable<ProductViewModel> GetAllProductsInCategory(int categoryId) {
+            var products = _service.GettAllProductsInCategory(categoryId);
+
+            await foreach (var product in products)
+            {
                 yield return new ProductViewModel(product);
             }
         }
