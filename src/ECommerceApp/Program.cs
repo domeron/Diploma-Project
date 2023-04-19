@@ -8,7 +8,6 @@ using ECommerceApp.Services;
 using ECommerceApp.Models;
 using ECommerceApp.Models.Validation;
 using ECommerceApp.Configuration;
-using ECommerceApp.Utils.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,13 +18,6 @@ var AllowReactOrigin = "_allowReactOrigin";
 builder.Configuration
     .AddJsonFile("appsettings.json", false)
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
-
-// [Email Sender]
-var emailConfig = builder.Configuration
-    .GetSection("EmailConfiguration")
-    .Get<EmailConfiguration>();
-builder.Services.AddSingleton(emailConfig);
-builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // [CORS]
 builder.Services.AddCors(options =>
@@ -77,6 +69,9 @@ builder.Services.AddScoped(typeof(ProductReviewService), typeof(ProductReviewSer
 builder.Services.AddScoped(typeof(IUserCartRepository), typeof(UserCartRepository));
 builder.Services.AddScoped(typeof(PaymentService), typeof(PaymentService));
 builder.Services.AddScoped(typeof(IPaymentCardRepository), typeof(PaymentCardRepository));
+builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
+builder.Services.AddScoped(typeof(CountryService), typeof(CountryService));
+builder.Services.AddScoped(typeof(ICountryRepository), typeof(CountryRepository));
 builder.Services.AddControllers();
 
 var app = builder.Build();
