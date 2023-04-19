@@ -9,6 +9,8 @@ import { Cart } from "styled-icons/fluentui-system-regular";
 import { SignOut } from "styled-icons/octicons";
 import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
+import ProfileImage from "./elements/ProfileImage";
+import { Dashboard, DashboardCustomize } from "styled-icons/material";
 
 export default function SubHeader() {
     const {user, setUser} = useContext(UserContext)
@@ -63,7 +65,10 @@ export default function SubHeader() {
                     <div className="flex">
                         {user ?
                         <div className="flex items-center gap-1 relative">
-                            <UserCircleIcon className="w-6"/>
+                            {user.profileImagePath ?
+                            <ProfileImage dimension={6} url={user.profileImagePath}/>
+                            :
+                            <UserCircleIcon className="w-6"/>}
                             <p>{user.firstName}</p>
                             <ChevronDownIcon 
                             onClick={() => {setViewUserDropDown(!viewUserDropDown)}}
@@ -77,6 +82,12 @@ export default function SubHeader() {
                                     <p>Favorites</p>
                                     <HeartOutlined className="w-5"/>
                                 </DropDownMenuItem>
+                                {user.isSeller &&
+                                <DropDownMenuItem url='/SellerDashboard'>
+                                    <p>Seller Dashboard</p>
+                                    <DashboardCustomize className="w-5"/>
+                                </DropDownMenuItem>
+                                }
                                 <DropDownMenuItem handleClick={handleSignOut}>
                                     <p>Sign Out</p>
                                     <SignOut className="w-4"/>

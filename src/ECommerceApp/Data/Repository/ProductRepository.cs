@@ -22,7 +22,8 @@ namespace ECommerceApp.Data.Repository
                 return false;
             }
             catch (ProductNotFoundException) { }
-            Product product = new Product { 
+            Product product = new()
+            { 
                 ProductName = productModel.ProductName,
                 ProductDescription= productModel.ProductDescription,
                 SellerId = productModel.SellerId,

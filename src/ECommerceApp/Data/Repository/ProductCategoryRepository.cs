@@ -26,6 +26,15 @@ namespace ECommerceApp.Data.Repository
             }
         }
 
+        public async IAsyncEnumerable<ProductCategory> GetChildCategories(int categoryId) {
+            var childCategories = _context.ProductCategories
+                .Where(c => c.ParentCategoryId == categoryId)
+                .OrderBy(c => c.CategoryName)
+                .AsAsyncEnumerable();
+
+            await foreach (var childCategory in childCategories) { yield return childCategory; }
+        }
+
         public async Task<ProductCategory> GetCategoryByIdAsync(int id) {
             return await _context.ProductCategories
                 .Where(c => c.Id == id)

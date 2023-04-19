@@ -2,6 +2,7 @@
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Services;
+using ECommerceApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
@@ -24,54 +25,33 @@ namespace ECommerceApp.Controllers
         {
             if (ModelState.IsValid && sellerModel != null)
             {
-                (Seller? seller, Exception? exception) = await _service.CreateSeller(sellerModel);
+                (bool created, Exception? e) = await _service.CreateSeller(sellerModel);
 
-                if (seller != null && exception == null)
+                if (created && e == null)
                 {
-                    return StatusCode((int)HttpStatusCode.Created, seller);
+                    return StatusCode((int)HttpStatusCode.Created, created);
                 }
 
-                if (exception is SellerWithEmailExistsException)
+                if (e is SellerWithEmailExistsException)
                     return BadRequest("Seller with provided email already exists.");
-                else if (exception is CouldNotAddEntityToDatabase)
+                else if (e is CouldNotAddEntityToDatabase)
                     return StatusCode(500, "Could not add seller to database");
                 else
-                    return StatusCode(500, exception.Message);
+                    return StatusCode(500, e.StackTrace);
             }
 
-            return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
-        }
-
-        [HttpPost("Login")]
-        public async Task<IActionResult> LoginSellerAsync(SellerLoginModel form)
-        {
-            if (ModelState.IsValid && !form.Email.IsNullOrEmpty() && !form.Password.IsNullOrEmpty())
-            {
-                (Seller? seller, Exception? exception) = await _service.GetSellerByEmailAndPasswordAsync(form.Email, form.Password);
-                if (seller != null && exception == null)
-                    return Ok(seller);
-
-                if (exception is SellerWithEmailDontExistException)
-                    return BadRequest("Seller with provided email is not found.");
-                if (exception is WrongPasswordException)
-                    return BadRequest("Wrong password");
-                else if (exception is SellerNotFoundException)
-                    return NotFound("Seller with provided email and password is not found.");
-                else
-                    return StatusCode(500, exception.Message);
-            }
             return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateSeller(int id, SellerCreateModel model)
+        public async Task<IActionResult> UpdateSeller(int id, SellerUpdateModel model)
         {
             if (ModelState.IsValid && model != null)
             {
                 (Seller? seller, Exception? exception) = await _service.UpdateSeller(id, model);
 
                 if (seller != null && exception == null)
-                    return Ok(seller);
+                    return Ok(new SellerViewModel(seller));
 
                 if (exception is SellerWithEmailExistsException)
                     return BadRequest("Seller with provided email already exists.");
@@ -92,7 +72,7 @@ namespace ECommerceApp.Controllers
                 (Seller? seller, Exception? exception) = await _service.GetSellerByEmailAsync(email);
 
                 if (seller != null && exception == null)
-                    return Ok(seller);
+                    return Ok(new SellerViewModel(seller));
 
                 if (exception is SellerWithEmailDontExistException)
                     return BadRequest("Seller with provided email is not found.");
@@ -102,13 +82,33 @@ namespace ECommerceApp.Controllers
             return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
         }
 
+        [HttpGet("{sellerId}")]
+        public async Task<IActionResult> GetSellerByIdAsync(int sellerId) { 
+            (Seller? seller, Exception? e) = await _service.GetSellerByIdAsync(sellerId);
+
+            if(seller != null && e == null) return Ok(new SellerViewModel(seller));
+
+            if (e is SellerNotFoundException) return NotFound();
+            else return StatusCode(500, e.StackTrace);
+        }
+
         [HttpGet("All")]
-        public async IAsyncEnumerable<Seller> GetAllSellersAsync() {
+        public async IAsyncEnumerable<SellerViewModel> GetAllSellersAsync() {
             var sellers = _service.GetAllSellersAsync();
 
             await foreach (var seller in sellers) {
-                yield return seller;
+                yield return new SellerViewModel(seller);
             }
+        }
+
+        [HttpDelete("{sellerId}")]
+        public async Task<IActionResult> DeleteSellerAsync(int sellerId) {
+            (bool deleted, Exception? e) = await _service.DeleteSellerAsync(sellerId);
+
+            if (deleted && e == null) return Ok();
+
+            if (e is SellerNotFoundException) return NotFound();
+            else return StatusCode(500, e.StackTrace);
         }
     }
 }

@@ -30,7 +30,6 @@ namespace ECommerceApp.Data.Repository
                 LastName = model.LastName,
                 Email = model.Email,
                 Password = model.Password,
-                UserRole = "User"
             };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -82,26 +81,25 @@ namespace ECommerceApp.Data.Repository
             return user;
         }
 
-        public async Task UpdateUser(int id, UserCreateModel model)
+        public async Task UpdateUserAsync(User user, UserUpdateModel model)
         {
-            User user;
-            try
-            {
-                user = await GetUserByIdAsync(id);
-            } catch(UserNotFoundException e) { throw e; }
+            if(!model.FirstName.IsNullOrEmpty())
+                user.FirstName = model.FirstName!;
+            if(!model.LastName.IsNullOrEmpty()) 
+                user.LastName = model.LastName!;
+            if(!model.Email.IsNullOrEmpty())
+                user.Email = model.Email!;
+            if(!model.Password.IsNullOrEmpty())
+                user.Password = model.Password!;
+            if (!model.PhoneNumber.IsNullOrEmpty())
+                user.PhoneNumber = model.PhoneNumber;
+            if (!model.ProfileImagePath.IsNullOrEmpty())
+                user.ProfileImagePath = model.ProfileImagePath;
 
-            //if user provided new email, check if new email is used by someone else
-            if (!user.Email.Equals(model.Email)) {
-                try {
-                    if (await GetUserByEmailAsync(model.Email) != null) 
-                        throw new UserWithEmailExistsException();
-                }
-                catch (UserWithEmailDontExistException e) { }
-            }
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.Email = model.Email;
-            user.Password = model.Password;
+            await UpdateUserAsync(user);
+        }
+
+        public async Task UpdateUserAsync(User user) {
             _context.Attach(user);
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();

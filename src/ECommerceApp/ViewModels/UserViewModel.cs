@@ -9,21 +9,22 @@ namespace ECommerceApp.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public string UserRole { get; set; }
-        public ICollection<ProductViewModel>? Cart { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? ProfileImagePath { get; set; }
+
+        public bool IsSeller { get; set; }
+
+        public int? SellerId { get; set; }
 
         public UserViewModel(User user) { 
             UserId = user.UserId;
             FirstName = user.FirstName;
             LastName = user.LastName;
             Email = user.Email;
-            UserRole= user.UserRole;
-            if (!user.Cart.IsNullOrEmpty()) { 
-                Cart = new List<ProductViewModel>();
-                foreach (var userCart in user.Cart) {
-                    Cart.Add(new ProductViewModel(userCart.Product));
-                }
-            }
+            PhoneNumber = user.PhoneNumber;
+            ProfileImagePath = user.ProfileImagePath;
+            IsSeller = user.IsSeller;
+            SellerId = user.SellerId;
         }
     }
 }

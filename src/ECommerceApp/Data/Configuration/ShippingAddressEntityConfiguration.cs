@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ECommerceApp.Data.Configuration
 {
-    public class AddressEntityConfiguration : IEntityTypeConfiguration<Address>
+    public class ShippingAddressEntityConfiguration : IEntityTypeConfiguration<ShippingAddress>
     {
-        public void Configure(EntityTypeBuilder<Address> builder) { 
+        public void Configure(EntityTypeBuilder<ShippingAddress> builder) { 
             builder.HasKey(x => x.Id);
             builder.HasOne(a => a.User)
                 .WithOne(u => u.ShippingAddress)
-                .HasForeignKey<Address>(a => a.UserId)
+                .HasForeignKey<ShippingAddress>(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

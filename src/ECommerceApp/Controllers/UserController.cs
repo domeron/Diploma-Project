@@ -2,7 +2,6 @@
 using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.Services;
-using ECommerceApp.Utils.EmailSender;
 using ECommerceApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +15,10 @@ namespace ECommerceApp.Controllers
     public class UserController : Controller
     {
         private readonly UserService _userService;
-        private readonly IEmailSender _emailSender;
 
-        public UserController(UserService userService, IEmailSender emailSender)
+        public UserController(UserService userService)
         {
             _userService = userService;
-            _emailSender = emailSender;
         }
 
         [HttpPost("Create")]
@@ -33,7 +30,7 @@ namespace ECommerceApp.Controllers
 
                 if (user != null && exception == null)
                 {
-                    return StatusCode((int)HttpStatusCode.Created, user);
+                    return StatusCode((int)HttpStatusCode.Created, new UserViewModel(user));
                 }
 
                 if (exception is UserWithEmailExistsException)
@@ -49,8 +46,8 @@ namespace ECommerceApp.Controllers
 
         [HttpPost("Login")]
         public async Task<IActionResult> LoginUser(UserLoginModel form)
-        { 
-            if (ModelState.IsValid && !form.Email.IsNullOrEmpty() && !form.Password.IsNullOrEmpty()) { 
+        {
+            if (ModelState.IsValid && !form.Email.IsNullOrEmpty() && !form.Password.IsNullOrEmpty()) {
                 (User? user, Exception? exception) = await _userService.GetUserByEmailAndPasswordAsync(form.Email, form.Password);
                 if (user != null && exception == null)
                     return Ok(new UserViewModel(user));
@@ -68,7 +65,7 @@ namespace ECommerceApp.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserCreateModel userModel)
+        public async Task<IActionResult> UpdateUser(int id, [FromForm] UserUpdateModel userModel)
         {
             if (ModelState.IsValid && userModel != null)
             {
@@ -76,7 +73,7 @@ namespace ECommerceApp.Controllers
 
                 if (user != null && exception == null)
                 {
-                    return Ok(user);
+                    return Ok(new UserViewModel(user));
                 }
 
                 if (exception is UserWithEmailExistsException)
@@ -90,6 +87,16 @@ namespace ECommerceApp.Controllers
             return StatusCode((int)HttpStatusCode.InternalServerError, ModelState.Root.Errors.First().ErrorMessage);
         }
 
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserByIdAsync(int userId) {
+            (User? user, Exception? e) = await _userService.GetUserByIdAsync(userId);
+
+            if(user != null && e == null) return Ok(new UserViewModel(user));
+
+            if (e is UserNotFoundException) return NotFound();
+            else return StatusCode(500, e.StackTrace);
+        }
+
         [HttpGet("Email/{email}")]
         public async Task<IActionResult> GetUserByEmailAsync(string email)
         {
@@ -97,7 +104,7 @@ namespace ECommerceApp.Controllers
                 (User? user, Exception? exception) = await _userService.GetUserByEmailAsync(email);
 
                 if (user != null && exception == null)
-                    return Ok(user);
+                    return Ok(new UserViewModel(user));
 
                 if (exception is UserWithEmailDontExistException)
                     return BadRequest("User with provided email is not found.");
@@ -155,6 +162,18 @@ namespace ECommerceApp.Controllers
             else if (e is ProductNotFoundException) return BadRequest("Product not found");
             else if (e is ProductDoesntExistInUserCartException) return BadRequest("Product doesn't exist in User Cart");
             else return StatusCode(500, "Internal Server Error");
+        }
+
+        [HttpGet("ShippingAddress/{userId}")]
+        public async Task<IActionResult> GetUserShippingAddress(int userId) {
+            (Address? address, Exception? e) = await _userService.GetUserShippingAddressAsync(userId);
+
+            if (address != null && e == null) 
+                return Ok(new AddressViewModel(address));
+
+            if (e is UserNotFoundException) return NotFound();
+            else if (e is AddressNotFoundException) return NotFound();
+            else return StatusCode(500, e.StackTrace);
         }
     }
 }

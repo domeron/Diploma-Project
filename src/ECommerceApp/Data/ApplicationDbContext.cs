@@ -14,7 +14,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<ProductReview> ProductReviews{ get; set; }
     public DbSet<UserCart> UserCarts{ get; set; }
     public DbSet<PaymentCard> PaymentCards { get; set; }
-    public DbSet<Address> Addresses { get; set; }
+    public DbSet<ShippingAddress> ShippingAddresses { get; set; }
+    public DbSet<ShippingFromAddress> ShippingFromAddresses { get; set; }
+    public DbSet<Country> Countries { get; set; }
 
     public ApplicationDbContext(DbContextOptions options)
         : base(options)
@@ -29,6 +31,7 @@ public class ApplicationDbContext : DbContext
         new ProductEntityTypeConfiguration().Configure(builder.Entity<Product>());
         new UserCartEntityTypeConfiguration().Configure(builder.Entity<UserCart>());
         new ProductImageEntityTypeConfiguration().Configure(builder.Entity<ProductImage>());
-        new AddressEntityConfiguration().Configure(builder.Entity<Address>());
+        new ShippingAddressEntityConfiguration().Configure(builder.Entity<ShippingAddress>());
+        new ShippingFromAddressEntityTypeConfiguration().Configure(builder.Entity<ShippingFromAddress>());
     }
 }

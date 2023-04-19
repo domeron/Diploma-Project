@@ -18,6 +18,13 @@ namespace ECommerceApp.Data.Configuration
                 .WithOne(a => a.User)
                 .HasForeignKey<User>(u => u.ShippingAddressId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Property(u => u.IsSeller).HasDefaultValue(false);
+
+            builder.HasOne(u => u.Seller)
+                .WithOne(s => s.User)
+                .HasForeignKey<User>(u => u.SellerId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

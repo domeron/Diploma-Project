@@ -10,6 +10,7 @@ namespace ECommerceApp.Data.Repository
         public Task<User> GetUserByIdAsync(int id);
 
         public Task<User> GetUserByEmailAndPasswordAsync(string email, string password);
-        public Task UpdateUser(int id, UserCreateModel model);
+        public Task UpdateUserAsync(User user, UserUpdateModel model);
+        public Task UpdateUserAsync(User user);
     }
 }

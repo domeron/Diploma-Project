@@ -12,11 +12,15 @@ namespace ECommerceApp.Data.Configuration
             builder.Property(p => p.ProductName).IsRequired().HasMaxLength(128);
             builder.Property(p => p.PriceUSD).IsRequired();
             builder.Property(p => p.Quantity).IsRequired();
-            builder.HasOne(p => p.Seller).WithMany(s => s.Products)
-                .HasForeignKey(p => p.SellerId);
+            builder.HasOne(p => p.Seller)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
             builder.HasOne(p => p.Category)
                 .WithMany(s => s.Products)
-                .HasForeignKey(p => p.CategoryId);
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

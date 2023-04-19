@@ -14,29 +14,6 @@ namespace ECommerceApp.Data.Repository
         {
             _context = context;
         }
-        public async Task<bool> CreateSeller(SellerCreateModel model)
-        {
-            try
-            {
-                await GetSellerByEmailAsync(model.SellerEmail);
-                throw new SellerWithEmailExistsException();
-                return false;
-            }
-            catch (SellerWithEmailDontExistException) { }
-            var seller = new Seller
-            {
-                SellerName = model.SellerName,
-                SellerEmail = model.SellerEmail,
-                SellerDescription = model.SellerDescription,
-                IsIndividual = model.IsIndividual,
-                Password = model.Password,
-                UserRole = "Seller",
-            };
-            _context.Sellers.Add(seller);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<Seller> GetSellerByEmailAsync(string email)
         {
             if (email.IsNullOrEmpty())
@@ -56,55 +33,64 @@ namespace ECommerceApp.Data.Repository
                 throw new SellerNotFoundException();
         }
 
-        public async Task<Seller> GetSellerByEmailAndPasswordAsync(string email, string password)
+        public async IAsyncEnumerable<Seller> GetAllSellersAsync()
         {
-            if (email.IsNullOrEmpty() || password.IsNullOrEmpty())
-                throw new ArgumentException("Email and password are null or empty");
+            var sellers = _context.Sellers.OrderBy(s => s.SellerId).AsAsyncEnumerable();
 
-            var seller = await _context.Sellers.FirstOrDefaultAsync(s => s.SellerEmail == email) ??
-                throw new SellerWithEmailDontExistException();
-            if (!seller.Password.Equals(password))
+            await foreach (var seller in sellers)
             {
-                throw new WrongPasswordException();
+                yield return seller;
             }
+        }
+        public async Task<Seller> CreateSellerAsync(SellerCreateModel model)
+        {
+            var seller = new Seller
+            {
+                SellerName = model.SellerName,
+                SellerEmail = model.SellerEmail,
+                SellerDescription = model.SellerDescription,
+                IsIndividual = model.IsIndividual,
+                UserId = model.UserId,
+            };
+            await _context.Sellers.AddAsync(seller);
+            _context.Entry(seller).State = EntityState.Added;
+            await _context.SaveChangesAsync();
             return seller;
         }
 
-        public async Task UpdateSeller(int id, SellerCreateModel model)
-        {
-            Seller seller;
-            try
-            {
-                seller = await GetSellerByIdAsync(id);
-            } catch (SellerNotFoundException e) { throw e; }
 
-            if (!seller.SellerEmail.Equals(model.SellerEmail))
+        public async Task UpdateSellerAsync(Seller seller, SellerUpdateModel model)
+        {
+            if (!model.SellerEmail.IsNullOrEmpty() && !seller.SellerEmail.Equals(model.SellerEmail))
             {
                 try
                 {
-                    if (await GetSellerByEmailAsync(model.SellerEmail) != null)
+                    if (await GetSellerByEmailAsync(model.SellerEmail!) != null)
                         throw new SellerWithEmailExistsException();
                 }
                 catch (SellerWithEmailDontExistException) { }
             }
 
-            seller.SellerName = model.SellerName;
-            seller.SellerEmail = model.SellerEmail;
-            seller.SellerDescription = model.SellerDescription;
-            seller.IsIndividual = model.IsIndividual;
-            seller.Password = model.Password;
+            if(!model.SellerName.IsNullOrEmpty())
+                seller.SellerName = model.SellerName!;
+            if(!model.SellerEmail.IsNullOrEmpty())
+                seller.SellerEmail = model.SellerEmail!;
+            if(!model.SellerDescription.IsNullOrEmpty())
+                seller.SellerDescription = model.SellerDescription!;
+            if(model.IsIndividual.HasValue)
+                seller.IsIndividual = model.IsIndividual.Value;
+            if(model.IsVerified.HasValue)
+                seller.IsVerified = model.IsVerified.Value;
+
             _context.Attach(seller);
             _context.Entry(seller).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async IAsyncEnumerable<Seller> GetAllSellersAsync()
-        {
-            var sellers = _context.Sellers.OrderBy(s => s.SellerId).AsAsyncEnumerable();
-
-            await foreach (var seller in sellers) {
-                yield return seller;
-            }
+        public async Task DeleteSellerAsync(Seller seller) {
+            _context.Sellers.Remove(seller);
+            _context.Entry(seller).State= EntityState.Deleted;
+            await _context.SaveChangesAsync();
         }
     }
 }

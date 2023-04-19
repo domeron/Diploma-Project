@@ -10,11 +10,5 @@
         public int SellerId { get; set; }
 
         public IEnumerable<IFormFile> ImageFiles { get; set; }
-
-        public override string? ToString()
-        {
-            return $"Product Name: {ProductName}\n" +
-                $"Product Description: {ProductDescription}\n";
-        }
     }
 }

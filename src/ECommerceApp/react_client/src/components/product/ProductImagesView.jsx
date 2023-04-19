@@ -15,7 +15,7 @@ export default function ProductImagesView({product}) {
             {imageURLS.length > 0 &&
             <div className="flex flex-col gap-1">
                 {imageURLS.map((url, index) => {
-                    return <ProductIamgeThumbnail key={index} imageURL={url} 
+                    return <ProductImageThumbnail key={index} imageURL={url} 
                     setFocusedImageURL={setFocusedImageURL}
                     setChoosedImageURL={setChoosedImageURL}/>
                 })}
@@ -31,7 +31,7 @@ export default function ProductImagesView({product}) {
     );
 }
 
-function ProductIamgeThumbnail({imageURL, setChoosedImageURL, setFocusedImageURL}) {
+function ProductImageThumbnail({imageURL, setChoosedImageURL, setFocusedImageURL}) {
     return (
         <div 
         onMouseEnter={() => setFocusedImageURL(imageURL)}

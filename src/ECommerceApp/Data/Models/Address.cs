@@ -1,7 +1,7 @@
 ﻿
 namespace ECommerceApp.Data.Models
 {
-    public class Address
+    public abstract class Address
     {
         public int Id { get; set; }
 
@@ -14,7 +14,6 @@ namespace ECommerceApp.Data.Models
         public string PostalCode { get; set; }
         public string PhoneNumber { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public string FullName { get; set; }
     }
 }

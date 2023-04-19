@@ -5,13 +5,16 @@ import { UserContext } from "../App";
 import { EyeOutline } from "styled-icons/evaicons-outline";
 import { EyeOff2 } from "styled-icons/evaicons-solid";
 import { api_UserLogin } from "../api/user_api";
+import { Spinner3 } from "styled-icons/evil";
 
 export default function SignInForm({setSignInView, setSignUpView}) {
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
     const [viewPassword, setViewPassword] = useState(false);
     const {setUser} = useContext(UserContext)
+    const [loading, setLoading] = useState(false);
 
     async function onSignIn(data) {
+        setLoading(true);
         await api_UserLogin(data)
         .then((data) => {
             console.log(data);
@@ -26,6 +29,7 @@ export default function SignInForm({setSignInView, setSignUpView}) {
                 setError('password', { type: 'custom', message: err.response.data });
             }
         })
+        setLoading(false);
     }
 
     return (
@@ -68,8 +72,9 @@ export default function SignInForm({setSignInView, setSignUpView}) {
             </div>
 
             <div className="my-4">
-                <button type="submit" className="py-2 px-2 w-full rounded-md bg-blue-500 text-white shadow-md">
-                    Sign In
+                <button type="submit" className={`flex items-center justify-center px-2 h-12 w-full rounded-md bg-blue-500 text-white shadow-md`}>
+                    <span className="mx-4">Sign In</span>
+                    {loading && <Spinner3 className="w-8 h-8 animate-spin "/>}
                 </button>
             </div>
         </form>

@@ -28,7 +28,7 @@ namespace ECommerceApp.Services
             foreach (var imageFile in imageFiles)
             {
                 //_log.LogInformation($"imageFile: {imageFile.FileName}");
-                string filePath = await SaveImageFile(imageFile, product.SellerId);
+                string filePath = await SaveImageFile(imageFile, product.ProductId);
                 await _productImageRepository.CreateProductImage(product.ProductId, filePath);
                 //_log.LogInformation($"filePath: {filePath}");
                 if (i == 0)
@@ -39,9 +39,9 @@ namespace ECommerceApp.Services
             }
         }
 
-        private async Task<string> SaveImageFile(IFormFile imageFile, int sellerId) {
+        private async Task<string> SaveImageFile(IFormFile imageFile, int productId) {
             var uniqueFileName = FileHelper.GetUniqueFileName(imageFile.FileName);
-            var uploads = Path.Combine("images", "users", sellerId.ToString(), "products");
+            var uploads = Path.Combine("images", "products", productId.ToString());
             var filePath = Path.Combine(_environment.WebRootPath, uploads, uniqueFileName);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             await imageFile.CopyToAsync(new FileStream(filePath, FileMode.Create));
