@@ -14,15 +14,12 @@ namespace ECommerceApp.Controllers
     public class ProductController : Controller
     {
         private readonly ProductService _service;
-        private readonly ProductImageService _imagesService;
         private readonly ILogger<ProductController> _log;
         public ProductController(
             ProductService service,
-            ProductImageService imagesService,
             ILogger<ProductController> log)
         {
             _service = service;
-            _imagesService = imagesService;
             _log = log;
         }
 
@@ -68,6 +65,28 @@ namespace ECommerceApp.Controllers
             }
         }
 
+        [HttpGet("Category/{categoryId}/Random/{quantity}")]
+        public async IAsyncEnumerable<ProductViewModel> GetRandomProductsInCategory(int categoryId, int quantity)
+        {
+            var products = _service.GetRandomProductsInCategory(categoryId, quantity);
+
+            await foreach (var product in products)
+            {
+                yield return new ProductViewModel(product);
+            }
+        }
+
+        [HttpGet("Random/{quantity}")]
+        public async IAsyncEnumerable<ProductViewModel> GetRandomProducts(int quantity)
+        {
+            var products = _service.GetRandomProductsAsync(quantity);
+
+            await foreach (var product in products)
+            {
+                yield return new ProductViewModel(product);
+            }
+        }
+
         [HttpGet("Seller/Search/{sellerId}/{pattern}")]
         public async IAsyncEnumerable<ProductViewModel> GetSellersProductsStartingWithPatternAsync(int sellerId, string? pattern)
         {
@@ -96,14 +115,7 @@ namespace ECommerceApp.Controllers
         {
             (Product? product, Exception? exception) = await _service.CreateProductAsync(productModel);
 
-            if (product != null && exception == null)
-            {
-                _log.LogInformation("product created");
-                _log.LogInformation($"productModel: {productModel.ToString()}");
-                if (!productModel.ImageFiles.IsNullOrEmpty()) {
-                    //_log.LogInformation("imageFiles is not null or empty");
-                    await _imagesService.CreateProductImages(product, productModel.ImageFiles);
-                }
+            if (product != null && exception == null) {
                 return StatusCode((int)HttpStatusCode.Created);
             }
 
@@ -117,14 +129,14 @@ namespace ECommerceApp.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductCreateModel model)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateModel model)
         {
             if (ModelState.IsValid && model != null)
             {
-                (Product? product, Exception? exception) = await _service.UpdateProduct(id, model);
+                (bool updated, Exception? exception) = await _service.UpdateProduct(id, model);
 
-                if (product != null && exception == null)
-                    return Ok(product);
+                if (updated && exception == null)
+                    return Ok();
 
                 if (exception is ProductWithNameAndSellerExists)
                     return BadRequest("Product with provided name by this seller already exists.");

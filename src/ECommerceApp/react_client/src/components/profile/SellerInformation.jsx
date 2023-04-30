@@ -4,7 +4,7 @@ import { useState } from "react";
 import SellerSignUpForm from "../seller/SellerSignUpForm";
 import { useEffect } from "react";
 import { api_GetSellerById } from "../../api/seller_api";
-import { DashboardCustomize } from "styled-icons/material";
+import GridViewIcon from '@mui/icons-material/GridView';
 import { useNavigate } from "react-router-dom";
 
 export default function SellerInformation() {
@@ -29,17 +29,19 @@ export default function SellerInformation() {
     }
 
     return (
-        <div className="px-8 pt-4 pb-16 text-sm">
-            <div className="py-4 mb-6 border-b border-gray-300">
-                <p className="text-2xl font-semibold">Seller Information</p>
+        <div className="px-8 pt-4 pb-16 bg-white rounded-lg">
+            <div className="py-4 mb-6 border-b border-gray-300 flex justify-between">
+                <p className="text-3xl">Seller Information</p>
+                {user.isSeller &&
+                <button onClick={() => navigate('/SellerDashboard')}
+                className="px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2 bg-blue-500 text-white">
+                    <p>Seller Dashboard</p>
+                    <GridViewIcon className="w-5"/>
+                </button>
+                }
             </div>
             {user.isSeller ?
             <div>
-                <button onClick={() => navigate('/SellerDashboard')}
-                className="px-4 py-2 rounded-md hover:bg-blue-700 flex gap-2 bg-blue-500 text-white">
-                    <p>Seller Dashboard</p>
-                    <DashboardCustomize className="w-5"/>
-                </button>
                 {seller &&
                 <>
                 <InfoField fieldText={'Name'} fieldValue={seller.sellerName}/>

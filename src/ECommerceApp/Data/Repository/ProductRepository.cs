@@ -13,15 +13,8 @@ namespace ECommerceApp.Data.Repository
         public ProductRepository(ApplicationDbContext context) { 
             _context = context;
         }
-        public async Task<bool> CreateProductAsync(ProductCreateModel productModel)
+        public async Task CreateProductAsync(ProductCreateModel productModel)
         {
-            try
-            {
-                if (await GetProductByNameAndSellerIdAsync(productModel.ProductName, productModel.SellerId) != null)
-                    throw new ProductWithNameAndSellerExists();
-                return false;
-            }
-            catch (ProductNotFoundException) { }
             Product product = new()
             { 
                 ProductName = productModel.ProductName,
@@ -37,9 +30,8 @@ namespace ECommerceApp.Data.Repository
             };
             
             await _context.Products.AddAsync(product);
+            _context.Entry(product).State = EntityState.Added;
             await _context.SaveChangesAsync();
-
-            return true;
             
         }
 
@@ -82,8 +74,6 @@ namespace ECommerceApp.Data.Repository
             var products = _context.Products
                 .Where(p => p.SellerId == sellerId)
                 .Include(p => p.Category)
-                .ThenInclude(c => c.ParentCategory)
-                .ThenInclude(c => c.ParentCategory)
                 .OrderBy(p => p.ProductId).AsAsyncEnumerable();
 
             await foreach (var product in products)
@@ -164,7 +154,7 @@ namespace ECommerceApp.Data.Repository
                 yield return product; 
             }
         }
-
+        
         public async IAsyncEnumerable<Product> GetAllProductsInCategory(int categoryId) {
             var products = _context.Products
                 .Where(p => p.CategoryId == categoryId
@@ -178,85 +168,75 @@ namespace ECommerceApp.Data.Repository
             }
         }
 
-        public async Task UpdateProduct(int id, ProductCreateModel productModel)
+        public async IAsyncEnumerable<Product> GetRandomProductsInCategory(int categoryId, int quantity)
         {
-            Product product;
-            try
-            {
-                product = await GetProductByIdAsync(id);
-            } catch (ProductNotFoundException e) { throw e; }
+            var products = _context.Products
+                .Where(p => p.CategoryId == categoryId
+                || p.Category.ParentCategoryId == categoryId
+                || p.Category.ParentCategory.ParentCategoryId == categoryId)
+                .OrderBy(p => Guid.NewGuid())
+                .Take(quantity)
+                .AsAsyncEnumerable();
 
-            if (!product.ProductName.Equals(productModel.ProductName))
+            await foreach (var product in products)
             {
-                try {
-                    if (await GetProductByNameAndSellerIdAsync(productModel.ProductName, productModel.SellerId) != null)
-                        throw new ProductWithNameAndSellerExists();
-                }
-                catch(ProductNotFoundException) {}
+                yield return product;
             }
+        }
 
-            product.ProductName = productModel.ProductName;
-            product.ProductDescription = productModel.ProductDescription;
-            product.PriceUSD = productModel.PriceUSD;
-            product.Quantity = productModel.Quantity;
-            product.SellerId = productModel.SellerId;
-            product.CategoryId = productModel.CategoryId;
+        public async IAsyncEnumerable<Product> GetRandomProductsAsync(int quantity)
+        {
+            var products = _context.Products
+                .OrderBy(p => Guid.NewGuid())
+                .Take(quantity)
+                .AsAsyncEnumerable();
+
+            await foreach (var product in products)
+            {
+                yield return product;
+            }
+        }
+
+        public async Task UpdateProduct(Product product, ProductUpdateModel model)
+        {
+            if(!model.ProductName.IsNullOrEmpty())
+                product.ProductName = model.ProductName!;
+            if(!model.ProductDescription.IsNullOrEmpty())
+                product.ProductDescription = model.ProductDescription!;
+            if(model.PriceUSD.HasValue)
+                product.PriceUSD = model.PriceUSD.Value;
+
+            if(model.Quantity.HasValue)
+                product.Quantity = model.Quantity.Value;
+
+            if(model.CategoryId.HasValue)
+                product.CategoryId = model.CategoryId.Value;
+
+            if(!model.FrontImagePath.IsNullOrEmpty())
+                product.FrontImagePath = model.FrontImagePath!;
+
             product.LastUpdatedOn= DateTime.Now;
-            try
-            {
-                _context.Attach(product);
-                _context.Entry(product).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception) { throw; }
+
+            _context.Attach(product);
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task DeleteProductAsync(Product product)
         {
-            Product product;
-            try
-            {
-                product = await GetProductByIdAsync(id);
-            }
-            catch (ArgumentException e) { throw e; }
-            catch (ProductNotFoundException e) { throw e; }
-
-            try
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            } catch(Exception) { throw; }
+            _context.Products.Remove(product);
+            _context.Entry(product).State = EntityState.Deleted;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateWithNewReviewAsync(int id, ProductReview review)
+        public async Task UpdateWithNewReviewAsync(Product product, ProductReview review)
         {
-            Product product;
-            try
-            {
-                product = await GetProductByIdAsync(id);
-                product.ReviewsCount++;
-                product.Rating = Math.Round(
-                    await _context.ProductReviews.Where(r => r.ProductId == id).Select(r => r.Rating).AverageAsync(), 2);
-                _context.Attach(product);
-                _context.Entry(product).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (ProductNotFoundException e) { throw e; }
-            catch (Exception) { throw; }
-        }
-
-        public async Task SetFrontImageAsync(int id, string filePath)
-        {
-            try
-            {
-                var product = await GetProductByIdAsync(id);
-                product.FrontImagePath = filePath;
-                _context.Attach(product);
-                _context.Entry(product).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (ProductNotFoundException e) { throw e; }
-            catch (Exception) { throw; }
+            product.ReviewsCount++;
+            product.Rating = Math.Round(
+                await _context.ProductReviews.Where(r => r.ProductId == product.ProductId).Select(r => r.Rating).AverageAsync(), 2);
+            _context.Attach(product);
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

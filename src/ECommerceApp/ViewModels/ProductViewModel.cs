@@ -1,5 +1,6 @@
 ﻿using ECommerceApp.Data.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 
 namespace ECommerceApp.ViewModels
 {
@@ -7,6 +8,7 @@ namespace ECommerceApp.ViewModels
     {
         public int ProductId { get; set; }
         public int SellerId { get; set; }
+        public int CategoryId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
         public double PriceUSD { get; set; }
@@ -14,14 +16,15 @@ namespace ECommerceApp.ViewModels
         public double Rating { get; set; }
         public int ReviewsCount { get; set; }
         public string CreatedOn { get; set; }
-        public string FrontImagePath { get; set; }
-        public ICollection<string>? ImagesURL { get; set; }
-        public ProductCategoryViewModel Category { get; set; }
+        public string? FrontImagePath { get; set; }
+        public Dictionary<int,string>? ImagesURL { get; set; }
+        public ProductCategoryViewModel? Category { get; set; }
 
         public ProductViewModel(Product product)
         { 
             ProductId = product.ProductId;
             SellerId= product.SellerId;
+            CategoryId = product.CategoryId;
             ProductName = product.ProductName;
             ProductDescription = product.ProductDescription;
             PriceUSD = product.PriceUSD;
@@ -29,16 +32,19 @@ namespace ECommerceApp.ViewModels
             Rating = product.Rating;
             ReviewsCount = product.ReviewsCount;
             CreatedOn = product.CreatedOn.ToString("MMMM dd, yyyy");
-            Category = new ProductCategoryViewModel(new() { 
-                Id = product.CategoryId,
-                CategoryName = product.Category.CategoryName,
-            });
             FrontImagePath = product.FrontImagePath;
 
+            if (product.Category != null) { 
+                Category = new ProductCategoryViewModel(new() { 
+                    Id = product.CategoryId,
+                    CategoryName = product.Category.CategoryName,
+                });
+            }
+
             if (!product.ProductImages.IsNullOrEmpty()) {
-                ImagesURL = new List<string>();
+                ImagesURL = new Dictionary<int, string>();
                 foreach (var image in product.ProductImages) {
-                    ImagesURL.Add(image.ImagePath);
+                    ImagesURL.Add(image.Id, image.ImagePath);
                 }
             }
         }

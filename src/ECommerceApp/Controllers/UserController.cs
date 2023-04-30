@@ -175,5 +175,26 @@ namespace ECommerceApp.Controllers
             else if (e is AddressNotFoundException) return NotFound();
             else return StatusCode(500, e.StackTrace);
         }
+
+        [HttpPost("ShippingAddress")]
+        public async Task<IActionResult> CreateUserShippingAddress(AddressCreateModel model) {
+            (bool created, Exception? e) = await _userService.CreateUserShippingAddressAsync(model);
+
+            if(created && e == null) return Ok();
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpPut("ShippingAddress")]
+        public async Task<IActionResult> UpdateUserShippingAddress(AddressUpdateModel model)
+        {
+            (bool created, Exception? e) = await _userService.UpdateUserShippingAddressAsync(model);
+
+            if (created && e == null) return Ok();
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
     }
 }

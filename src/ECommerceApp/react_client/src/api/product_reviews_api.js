@@ -5,3 +5,9 @@ export async function api_GetAllReviewsAboutProduct(productId) {
     const dataPromise = await promise.then((response) => response.data);
     return dataPromise;
 }
+
+export async function api_CreateReview(data) {
+    const promise = axios.post(`https://localhost:7077/ProductReview/Create`, data);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}

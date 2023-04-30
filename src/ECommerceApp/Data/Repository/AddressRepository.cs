@@ -43,7 +43,7 @@ namespace ECommerceApp.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Address> GetShiipingAddressByIdAsync(int addressId)
+        public async Task<ShippingAddress> GetShiipingAddressByIdAsync(int addressId)
         {
             return await _context.ShippingAddresses
                 .Where(sa => sa.Id == addressId)
@@ -52,7 +52,7 @@ namespace ECommerceApp.Data.Repository
                 ?? throw new AddressNotFoundException();
         }
 
-        public async Task<Address> GetUserShippingAddressAsync(int userId)
+        public async Task<ShippingAddress> GetUserShippingAddressAsync(int userId)
         {
             return await _context.ShippingAddresses
                 .Where(a => a.UserId == userId)
@@ -63,28 +63,28 @@ namespace ECommerceApp.Data.Repository
 
         public async Task UpdateShippingAddressAsync(ShippingAddress address, AddressUpdateModel model)
         {
-            if (!model.PostalCode.IsNullOrEmpty())
+            if (!model.PostalCode.IsNullOrEmpty() && !address.PostalCode.Equals(model.PostalCode))
                 address.PostalCode = model.PostalCode!;
 
-            if (!model.StreetAddress.IsNullOrEmpty())
+            if (!model.StreetAddress.IsNullOrEmpty() && !address.StreetAddress.Equals(model.StreetAddress))
                 address.StreetAddress = model.StreetAddress!;
 
-            if (!model.StreetAddress2.IsNullOrEmpty())
+            if (!model.StreetAddress2.IsNullOrEmpty() && !address.StreetAddress2!.Equals(model.StreetAddress2))
                 address.StreetAddress2 = model.StreetAddress2;
 
-            if (!model.PhoneNumber.IsNullOrEmpty())
+            if (!model.PhoneNumber.IsNullOrEmpty() && !address.PhoneNumber.Equals(model.PhoneNumber))
                 address.PhoneNumber = model.PhoneNumber!;
 
-            if(model.CountryId.HasValue)
+            if(model.CountryId.HasValue && address.CountryId != model.CountryId.Value)
                 address.CountryId = model.CountryId.Value;
 
-            if (!model.State.IsNullOrEmpty())
+            if (!model.State.IsNullOrEmpty() && !address.State.Equals(model.State))
                 address.State = model.State!;
             
-            if(!model.City.IsNullOrEmpty())
+            if(!model.City.IsNullOrEmpty() && !address.City.Equals(model.City))
                 address.City = model.City!;
 
-            if(!model.FullName.IsNullOrEmpty())
+            if(!model.FullName.IsNullOrEmpty() && !address.FullName.Equals(model.FullName))
                 address.FullName = model.FullName!;
 
             _context.Entry(address).State = EntityState.Modified;

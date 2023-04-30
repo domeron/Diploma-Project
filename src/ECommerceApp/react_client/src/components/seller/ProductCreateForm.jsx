@@ -3,37 +3,16 @@ import { ErrorMessage } from "@hookform/error-message";
 import { useContext, useEffect, useState } from "react";
 import { api_CreateProduct } from "../../api/product_api";
 import { SellerContext } from "../../pages/SellerDashboard";
-import { api_GetAllCategoriesWithChildren } from "../../api/category_api";
-import { ChevronRight } from "styled-icons/entypo";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-export default function ProductCreateForm({onCreate}) {
+export default function ProductCreateForm({onCreate, categories}) {
     const {seller} = useContext(SellerContext);
-    const [categories, setCategories] = useState([]);
-
-    const [topCategory, setTopCategory] = useState(null);
-    const [subCategory, setSubCategory] = useState(null);
-    const [subsubCategory, setSubSubCategory] = useState(null);
-
     const { register, handleSubmit, watch, setValue, setError, formState: { errors } } = useForm();
     const watchImages = watch('imageFiles')
-
-    useEffect(() => {
-        loadCategories();
-    }, [])
-
+    
     useEffect(() => {
         console.log(watchImages)
     }, [watchImages])
-
-    useEffect(() => {
-        if(subsubCategory !== null) {
-            setValue('categoryId', subsubCategory.id)
-        } else if (subCategory !== null) {
-            setValue('categoryId', subCategory.id)
-        } else if(topCategory !== null) {
-            setValue('categoryId', topCategory.id)
-        }
-    }, [topCategory, subCategory, subsubCategory])
 
     async function handleCreateProduct(data) {
         console.log(data);
@@ -53,15 +32,6 @@ export default function ProductCreateForm({onCreate}) {
         .then((responseData) => {
             console.log(responseData)
             onCreate();
-        })
-        .catch(err => console.log(err))
-    }
-
-    async function loadCategories() {
-        await api_GetAllCategoriesWithChildren()
-        .then((data) => {
-            console.log(data)
-            setCategories(data)
         })
         .catch(err => console.log(err))
     }
@@ -93,78 +63,7 @@ export default function ProductCreateForm({onCreate}) {
 
                 <div className="mb-4 border-b border-gray-400">
                     <p className="mb-4 text-lg font-semibold">Category</p>
-
-                    <div className="flex gap-1 my-4">
-                        {topCategory && 
-                        <div className="flex gap-1">
-                            <p>{topCategory.categoryName}</p>
-                        </div>}
-                        {subCategory && 
-                        <div className="flex gap-1 items-center">
-                            <ChevronRight className="w-5 h-5 text-gray-500"/>
-                            <p>{subCategory.categoryName}</p>
-                        </div>}
-                        {subsubCategory && 
-                        <div className="flex gap-1 items-center">
-                            <ChevronRight className="w-5 h-5 text-gray-500"/>
-                            <p>{subsubCategory.categoryName}</p>
-                        </div>}
-                    </div>
-
-                    <div className="flex gap-4 mb-6">
-                        <select value={topCategory ? topCategory.id : -1}
-                        className="py-1 px-2 border border-gray-400 rounded-sm"
-                        onChange={(e) => {
-                            if(e.target.value != -1) {
-                                setTopCategory(categories.find((c) => c.id == e.target.value))
-                                setSubCategory(null)
-                                setSubSubCategory(null)
-                            } else {
-                                console.log('aa')   
-                                setSubSubCategory();
-                                setSubCategory();
-                                setTopCategory();
-                            }
-                        }}>
-                            <option value={-1}>Choose Category</option>
-                            {categories.map((topCategory, index) => {
-                                return <option value={topCategory.id} key={index}>{topCategory.categoryName}</option>
-                            })}
-                        </select>
-
-                        {topCategory && topCategory.childCategories.length > 0 &&
-                        <select className="py-1 px-2 border border-gray-400 rounded-sm"
-                        onChange={(e) => {
-                            if(e.target.value != -1)
-                                setSubCategory(topCategory.childCategories.find((c) => c.id == e.target.value))
-                            else {
-                                setSubCategory(null)
-                                setSubSubCategory(null)
-                            }
-                        }}>
-                            <option value={-1}>Choose Subcategory</option>
-                            {topCategory.childCategories.map((sub, index) => {
-                                return <option value={sub.id} key={index}>{sub.categoryName}</option>
-                            })}
-                        </select>
-                        }
-
-                        {topCategory && subCategory && subCategory.childCategories.length > 0 &&
-                        <select className="py-1 px-2 border border-gray-400 rounded-sm"
-                        onChange={(e) => {
-                            if(e.target.value != -1)
-                                setSubSubCategory(subCategory.childCategories.find((c) => c.id == e.target.value))
-                            else {
-                                setSubSubCategory(null)
-                            }
-                        }}>
-                            <option value={-1}>Choose Subcategory</option>
-                            {subCategory.childCategories.map((sub, index) => {
-                                return <option value={sub.id} key={index}>{sub.categoryName}</option>
-                            })}
-                        </select>
-                        }
-                    </div>
+                    <CategoryChoose categories={categories} setValue={setValue}/>
                 </div>
 
                 <div className="mb-4">
@@ -247,4 +146,124 @@ function ProductImageThumbnail({image, setSelectedIndex, setFocusedIndex, index}
             <img src={image} alt="img thumbnail" className="w-full h-full object-contain"/>
         </div>
     );
+}
+
+export function CategoryChoose({disabled=false, categories, setValue=null, initialCategoryId}) {
+    const [topCategory, setTopCategory] = useState(null);
+    const [subCategory, setSubCategory] = useState(null);
+    const [subsubCategory, setSubSubCategory] = useState(null);
+
+    useEffect(() => {
+        console.log('useEffect In CategoryChoose depending on initialCategoryId')
+        if(initialCategoryId) {
+            categories.map((top) => {
+                if(top.id === initialCategoryId) setTopCategory(top);
+                else {
+                    top.childCategories.map((sub) => {
+                        if(sub.id === initialCategoryId) {
+                            setTopCategory(top);
+                            setSubCategory(sub);
+                        } else {
+                            sub.childCategories.map((subsub) => {
+                                if(subsub.id === initialCategoryId) {
+                                    setTopCategory(top);
+                                    setSubCategory(sub);
+                                    setSubSubCategory(subsub);
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }, [initialCategoryId])
+
+    useEffect(() => {
+        if(setValue) {
+            if(subsubCategory !== null) {
+                setValue('categoryId', subsubCategory.id)
+            } else if (subCategory !== null) {
+                setValue('categoryId', subCategory.id)
+            } else if(topCategory !== null) {
+                setValue('categoryId', topCategory.id)
+            }
+        }
+    }, [topCategory, subCategory, subsubCategory])
+    return (
+        <>
+        <div className="flex gap-1 my-4">
+            {topCategory && 
+            <div className="flex gap-1">
+                <p>{topCategory.categoryName}</p>
+            </div>}
+            {subCategory && 
+            <div className="flex gap-1 items-center">
+                <ChevronRightIcon className="w-5 h-5 text-gray-500"/>
+                <p>{subCategory.categoryName}</p>
+            </div>}
+            {subsubCategory && 
+            <div className="flex gap-1 items-center">
+                <ChevronRightIcon className="w-5 h-5 text-gray-500"/>
+                <p>{subsubCategory.categoryName}</p>
+            </div>}
+        </div>
+
+        <div className="flex gap-4 mb-6">
+            <select value={topCategory ? topCategory.id : -1}
+            className="py-1 px-2 border border-gray-400 rounded-sm" disabled={disabled}
+            onChange={(e) => {
+                if(e.target.value != -1) {
+                    setTopCategory(categories.find((c) => c.id == e.target.value))
+                    setSubCategory(null)
+                    setSubSubCategory(null)
+                } else {
+                    console.log('aa')   
+                    setSubSubCategory();
+                    setSubCategory();
+                    setTopCategory();
+                }
+            }}>
+                <option value={-1}>Choose Category</option>
+                {categories.map((topCategory, index) => {
+                    return <option value={topCategory.id} key={index}>{topCategory.categoryName}</option>
+                })}
+            </select>
+
+            {topCategory && topCategory.childCategories.length > 0 &&
+            <select value={subCategory ? subCategory.id : -1} disabled={disabled}
+            className="py-1 px-2 border border-gray-400 rounded-sm"
+            onChange={(e) => {
+                if(e.target.value != -1)
+                    setSubCategory(topCategory.childCategories.find((c) => c.id == e.target.value))
+                else {
+                    setSubCategory(null)
+                    setSubSubCategory(null)
+                }
+            }}>
+                <option value={-1}>Choose Subcategory</option>
+                {topCategory.childCategories.map((sub, index) => {
+                    return <option value={sub.id} key={index}>{sub.categoryName}</option>
+                })}
+            </select>
+            }
+
+            {topCategory && subCategory && subCategory.childCategories.length > 0 &&
+            <select value={subsubCategory ? subsubCategory.id : -1} disabled={disabled}
+            className="py-1 px-2 border border-gray-400 rounded-sm"
+            onChange={(e) => {
+                if(e.target.value != -1)
+                    setSubSubCategory(subCategory.childCategories.find((c) => c.id == e.target.value))
+                else {
+                    setSubSubCategory(null)
+                }
+            }}>
+                <option value={-1}>Choose Subcategory</option>
+                {subCategory.childCategories.map((sub, index) => {
+                    return <option value={sub.id} key={index}>{sub.categoryName}</option>
+                })}
+            </select>
+            }
+        </div>
+        </>
+    )
 }

@@ -4,6 +4,7 @@ using ECommerceApp.Exceptions;
 using ECommerceApp.Models;
 using ECommerceApp.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System.Linq.Expressions;
 
 namespace ECommerceApp.Services
@@ -48,8 +49,9 @@ namespace ECommerceApp.Services
             try
             {
                 ProductReview review = await repository.CreateProductReview(model);
+                var product = await productRepository.GetProductByIdAsync(review.ProductId);
 
-                await productRepository.UpdateWithNewReviewAsync(review.ProductId, review);
+                await productRepository.UpdateWithNewReviewAsync(product, review);
                 return (review, null);
             }
             catch (ArgumentException e) { return (null, e); }

@@ -12,7 +12,6 @@ namespace ECommerceApp.Data.Repository
             _context = context;
         }
 
-
         public async IAsyncEnumerable<ProductCategory> GetTopCategories()
         {
             var categories = _context.ProductCategories
@@ -38,18 +37,35 @@ namespace ECommerceApp.Data.Repository
         public async Task<ProductCategory> GetCategoryByIdAsync(int id) {
             return await _context.ProductCategories
                 .Where(c => c.Id == id)
-                .Include(c => c.ParentCategory)
-                .ThenInclude(c => c.ParentCategory)
-                .Include(c => c.ChildCategories)
-                .ThenInclude(c => c.ChildCategories)
                 .FirstOrDefaultAsync()
 
                 ?? throw new ProductCategoryNotFound();
         }
 
-        public async Task<ProductCategory> GetCategoryWithChildrenAsync(int id) {
+        public async Task<ProductCategory> GetCategoryByIdWithChildrenAsync(int id) {
             return await _context.ProductCategories
                 .Where(c => c.Id == id)
+                .Include(c => c.ChildCategories)
+                .ThenInclude(c => c.ChildCategories)
+                .FirstOrDefaultAsync()
+                ?? throw new ProductCategoryNotFound();
+        }
+
+        public async Task<ProductCategory> GetCategoryByIdWithParentsAsync(int id)
+        {
+            return await _context.ProductCategories
+                .Where(c => c.Id == id)
+                .Include(c => c.ParentCategory)
+                .ThenInclude(c => c.ParentCategory)
+                .FirstOrDefaultAsync()
+                ?? throw new ProductCategoryNotFound();
+        }
+
+        public async Task<ProductCategory> GetCategoryByIdWithParentsAndChildrenAsync(int id) {
+            return await _context.ProductCategories
+                .Where(c => c.Id == id)
+                .Include(c => c.ParentCategory)
+                .ThenInclude(c => c.ParentCategory)
                 .Include(c => c.ChildCategories)
                 .ThenInclude(c => c.ChildCategories)
                 .FirstOrDefaultAsync()

@@ -2,10 +2,12 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState, useContext } from "react";
 import { UserContext } from "../App";
-import { EyeOutline } from "styled-icons/evaicons-outline";
-import { EyeOff2 } from "styled-icons/evaicons-solid";
 import { api_UserLogin } from "../api/user_api";
-import { Spinner3 } from "styled-icons/evil";
+import TextField from '@mui/material/TextField';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function SignInForm({setSignInView, setSignUpView}) {
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
@@ -34,31 +36,40 @@ export default function SignInForm({setSignInView, setSignUpView}) {
 
     return (
         <>
-        <p className="text-3xl font-bold mb-6">Sign In</p>
+        <p className="text-3xl font-semi    bold mb-6">Sign In</p>
         <form onSubmit={handleSubmit(onSignIn)}>
-            <div className="my-2">
-                <p className="mb-2">E-mail</p>
-                <input type="email" 
-                className="py-1 px-2 w-full rounded-md border border-gray-500"
+            <div className="my-4">
+                <TextField 
+                type="email" 
+                label="Email"
+                className="w-full"
+                variant="filled"
                 {...register('email', {required: 'Please, enter your E-mail'})}/>
                 <ErrorMessage errors={errors} name="email"
                 render={({ message }) => <p className="text-red-500">{message}</p>}/>
             </div>
 
-            <div className="my-2">
-                <p className="mb-2">Password</p>
-                <div className="py-1 pl-2 w-full flex rounded-md border border-gray-500">
-                    <input type={viewPassword ? 'text' : 'password'}
-                    className="grow outline-none"
-                    {...register('password', {required: 'Please, enter your Password'})}/>
+            <div className="my-4">
+                <TextField 
+                type={viewPassword ? 'text' : 'password'}
+                label="Password"
+                variant="filled"
+                className="w-full"
+                {...register('password', {required: 'Please, enter your Password'})}/>
 
-                    <div className="px-2 cursor-pointer hover:text-blue-500 text-gray-500"
-                        onClick={() => setViewPassword(!viewPassword)}>
-                            {viewPassword ?
-                            <EyeOutline className="w-6 h-6"/>
-                            : 
-                            <EyeOff2 className="w-6 h-6"/>}
-                    </div>
+                <div className="my-4 flex gap-1 items-center cursor-pointer hover:text-blue-500 text-gray-500 text-sm"
+                    onClick={() => setViewPassword(!viewPassword)}>
+                        {viewPassword ?
+                        <>
+                        <VisibilityIcon className="w-6 h-6"/>
+                        <p>Hide Password</p>
+                        </>
+                        : 
+                        <>
+                        <VisibilityOffIcon className="w-6 h-6"/>
+                        <p>Show Password</p>
+                        </>
+                        }
                 </div>
 
                 <ErrorMessage errors={errors} name="password"
@@ -74,7 +85,7 @@ export default function SignInForm({setSignInView, setSignUpView}) {
             <div className="my-4">
                 <button type="submit" className={`flex items-center justify-center px-2 h-12 w-full rounded-md bg-blue-500 text-white shadow-md`}>
                     <span className="mx-4">Sign In</span>
-                    {loading && <Spinner3 className="w-8 h-8 animate-spin "/>}
+                    {loading && <AutorenewIcon className="w-8 h-8 animate-spin "/>}
                 </button>
             </div>
         </form>

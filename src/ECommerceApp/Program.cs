@@ -67,8 +67,7 @@ builder.Services.AddScoped(typeof(ProductImageService), typeof(ProductImageServi
 builder.Services.AddScoped(typeof(IProductReviewRepository), typeof(ProductReviewRepository));
 builder.Services.AddScoped(typeof(ProductReviewService), typeof(ProductReviewService));
 builder.Services.AddScoped(typeof(IUserCartRepository), typeof(UserCartRepository));
-builder.Services.AddScoped(typeof(PaymentService), typeof(PaymentService));
-builder.Services.AddScoped(typeof(IPaymentCardRepository), typeof(PaymentCardRepository));
+
 builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
 builder.Services.AddScoped(typeof(CountryService), typeof(CountryService));
 builder.Services.AddScoped(typeof(ICountryRepository), typeof(CountryRepository));

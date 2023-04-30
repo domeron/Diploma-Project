@@ -13,7 +13,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<ProductReview> ProductReviews{ get; set; }
     public DbSet<UserCart> UserCarts{ get; set; }
-    public DbSet<PaymentCard> PaymentCards { get; set; }
     public DbSet<ShippingAddress> ShippingAddresses { get; set; }
     public DbSet<ShippingFromAddress> ShippingFromAddresses { get; set; }
     public DbSet<Country> Countries { get; set; }

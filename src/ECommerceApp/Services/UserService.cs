@@ -196,5 +196,29 @@ namespace ECommerceApp.Services
             catch (Exception e) {return (null, e); }
         }
 
+        public async Task<(bool, Exception?)> CreateUserShippingAddressAsync(AddressCreateModel model) {
+            try
+            {
+                await _addressRepository.CreateShippingAddressAsync(model);
+
+                return(true, null);
+            }
+            catch (UserNotFoundException e) { return (false, e); }
+            catch(Exception e) {return(false, e); }
+        }
+
+        public async Task<(bool, Exception?)> UpdateUserShippingAddressAsync(AddressUpdateModel model)
+        {
+            try
+            {
+                var address = await _addressRepository.GetShiipingAddressByIdAsync(model.AddressId);
+                await _addressRepository.UpdateShippingAddressAsync(address, model);
+
+                return (true, null);
+            }
+            catch (AddressNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
     }
 }

@@ -14,9 +14,9 @@ export default function PersonalInformation() {
     }, [])
 
     return (
-        <div className="px-8 pt-4 pb-16 text-sm">
+        <div className="px-8 pt-4 pb-16">
             <div className="py-4 mb-8 border-b border-gray-300">
-                <p className="text-2xl font-semibold">Personal Information</p>
+                <p className="text-3xl">Personal Information</p>
             </div>
             <div>
                 <InfoField fieldName={'profileImage'} fieldText={'Profile Image'} fieldValue={user.profileImagePath}/>
@@ -31,6 +31,7 @@ export default function PersonalInformation() {
 
 function InfoField({fieldName, fieldValue, fieldText}) {
     const [editing, setEditing] = useState(false);
+    const {user} = useUser()
 
     return (
         <div className="flex py-6 border-b border-gray-300">
@@ -48,7 +49,7 @@ function InfoField({fieldName, fieldValue, fieldText}) {
                 </div>
                 :
                     (fieldName === 'profileImage' ?
-                        (fieldValue && <ProfileImage dimension={48} url={fieldValue}/>)
+                        (fieldValue && <ProfileImage dimension={128} user={user}/>)
                     :
                     <p>{fieldValue ? fieldValue : 'No Information'}</p>)
                 }

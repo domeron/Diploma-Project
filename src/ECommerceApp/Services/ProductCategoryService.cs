@@ -12,7 +12,6 @@ namespace ECommerceApp.Services
         {
             _repository = repository;
         }
-
         public async IAsyncEnumerable<ProductCategory> GetTopCategories() {
             var categories = _repository.GetTopCategories();
 
@@ -26,6 +25,39 @@ namespace ECommerceApp.Services
             try
             {
                 var category = await _repository.GetCategoryByIdAsync(id);
+                return (category, null);
+            }
+            catch (ProductCategoryNotFound e) { return (null, e); }
+            catch (Exception e) { return (null, e); }
+        }
+
+        public async Task<(ProductCategory?, Exception?)> GetCategoryByIdWithChildrenAsync(int id)
+        {
+            try
+            {
+                var category = await _repository.GetCategoryByIdWithChildrenAsync(id);
+                return (category, null);
+            }
+            catch (ProductCategoryNotFound e) { return (null, e); }
+            catch (Exception e) { return (null, e); }
+        }
+
+        public async Task<(ProductCategory?, Exception?)> GetCategoryByIdWithParentsAsync(int id)
+        {
+            try
+            {
+                var category = await _repository.GetCategoryByIdWithParentsAsync(id);
+                return (category, null);
+            }
+            catch (ProductCategoryNotFound e) { return (null, e); }
+            catch (Exception e) { return (null, e); }
+        }
+
+        public async Task<(ProductCategory?, Exception?)> GetCategoryByIdWithParentsAndChildrenAsync(int id)
+        {
+            try
+            {
+                var category = await _repository.GetCategoryByIdWithParentsAndChildrenAsync(id);
                 return (category, null);
             }
             catch (ProductCategoryNotFound e) { return (null, e); }

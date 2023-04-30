@@ -1,7 +1,12 @@
-export default function ProfileImage({dimension, url}) {
+import { Avatar } from "@mui/material";
+
+export default function ProfileImage({user, dimension}) {
     return (
-        <div className={`w-${dimension} h-${dimension} flex items-center justify-center border border-gray-500 rounded-full`}>
-            <img src={`https://localhost:7077/${url}`} className="w-full h-full rounded-full"/>
-        </div>
+        user.profileImagePath ?
+        <Avatar src={`https://localhost:7077/${user.profileImagePath}`} sx={{width: dimension, height: dimension}}/>
+        :
+        <Avatar sx={{width: dimension, height: dimension}}>
+            {user.firstName.charAt(0).toUpperCase()}{user.lastName.charAt(0).toUpperCase()}
+        </Avatar>
     );
 }

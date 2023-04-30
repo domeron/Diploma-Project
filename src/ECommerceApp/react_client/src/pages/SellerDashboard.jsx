@@ -37,27 +37,29 @@ export default function SellerDashboard() {
         <>
         <SubHeader/>
         <Header/>
-        <div className='mx-auto max-w-6xl py-4'>
-            <SellerContext.Provider value={{seller: seller, setSeller: setSeller}}>
-                {user && user.isSeller &&
-                <div className="flex gap-2 items-start">
-                    <div className="w-64 border border-gray-300 rounded shadow">
-                        <SideTab tabId={0} selectedTab={selectedTab} setTab={setSelectedTab} 
-                        text={'Seller Information'}/>
-                        <SideTab tabId={1} selectedTab={selectedTab} setTab={setSelectedTab} 
-                        text={'Addresses'}/>
-                        <SideTab tabId={2} selectedTab={selectedTab} setTab={setSelectedTab} 
-                        text={'Products'}/>
-                        <SideTab tabId={3} selectedTab={selectedTab} setTab={setSelectedTab} 
-                        text={'Seller Information'}/>        
+        <div className="bg-slate-50">
+            <div className='mx-auto max-w-6xl py-4'>
+                <SellerContext.Provider value={{seller: seller, setSeller: setSeller}}>
+                    {user && user.isSeller &&
+                    <div className="flex gap-2 items-start">
+                        <div className="w-64 border border-gray-300 rounded shadow bg-white">
+                            <SideTab tabId={0} selectedTab={selectedTab} setTab={setSelectedTab} 
+                            text={'Seller Information'}/>
+                            <SideTab tabId={1} selectedTab={selectedTab} setTab={setSelectedTab} 
+                            text={'Addresses'}/>
+                            <SideTab tabId={2} selectedTab={selectedTab} setTab={setSelectedTab} 
+                            text={'Products'}/>
+                            <SideTab tabId={3} selectedTab={selectedTab} setTab={setSelectedTab} 
+                            text={'Seller Information'}/>        
+                        </div>
+                        <div className="grow border rounded border-gray-300 bg-white">
+                            {selectedTab === 0 && <SellerInformation/>}
+                            {selectedTab === 2 && <SellerProducts/>}
+                        </div>
                     </div>
-                    <div className="grow border border-gray-300">
-                        {selectedTab === 0 && <SellerInformation/>}
-                        {selectedTab === 2 && <SellerProducts/>}
-                    </div>
-                </div>
-                }
-            </SellerContext.Provider>
+                    }
+                </SellerContext.Provider>
+            </div>
         </div>
         <Footer/>
         </>

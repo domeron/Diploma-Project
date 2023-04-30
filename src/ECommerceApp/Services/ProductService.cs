@@ -13,12 +13,15 @@ namespace ECommerceApp.Services
     {
         private readonly IProductRepository _repository;
         private readonly IProductCategoryRepository _categoryRepository;
+        private readonly ProductImageService _productImageService;
 
         public ProductService(IProductRepository repository, 
-            IProductCategoryRepository categoryRepository)
+            IProductCategoryRepository categoryRepository,
+            ProductImageService productImageService)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
+            _productImageService = productImageService;
         }
 
         public async Task<(Product?, Exception?)> GetProductByIdAsync(int productId) {
@@ -39,8 +42,16 @@ namespace ECommerceApp.Services
 
             try
             {
+                try
+                {
+                    if (await _repository.GetProductByNameAndSellerIdAsync(productModel.ProductName, productModel.SellerId) != null)
+                        throw new ProductWithNameAndSellerExists();
+                }
+                catch (ProductNotFoundException) { }
+
                 await _repository.CreateProductAsync(productModel);
                 var product = await _repository.GetProductByNameAndSellerIdAsync(productModel.ProductName, productModel.SellerId);
+                await _productImageService.CreateProductImages(product, productModel.ImageFiles);
                 return (product, null);
             }
             catch (ProductWithNameAndSellerExists e) { return (null, e); }
@@ -85,6 +96,26 @@ namespace ECommerceApp.Services
             }
         }
 
+        public async IAsyncEnumerable<Product> GetRandomProductsInCategory(int categoryId, int quantity)
+        {
+            var products = _repository.GetRandomProductsInCategory(categoryId, quantity);
+
+            await foreach (var product in products)
+            {
+                yield return product;
+            }
+        }
+
+        public async IAsyncEnumerable<Product> GetRandomProductsAsync(int quantity)
+        {
+            var products = _repository.GetRandomProductsAsync(quantity);
+
+            await foreach (var product in products)
+            {
+                yield return product;
+            }
+        }
+
         public async IAsyncEnumerable<Product> GetProductsStartingWithPatternAsync(int cateogoryId, string? sortOption, string pattern)
         {
 
@@ -96,26 +127,46 @@ namespace ECommerceApp.Services
             }
         }
 
-        public async Task<(Product?, Exception?)> UpdateProduct(int id, ProductCreateModel model)
+        public async Task<(bool, Exception?)> UpdateProduct(int id, ProductUpdateModel model)
         {
             if (model == null)
-                return (null, new ArgumentException("Model is null"));
+                return (false, new ArgumentException("Model is null"));
             try
             {
-                await _repository.UpdateProduct(id, model);
-                var seller = await _repository.GetProductByIdAsync(id);
-                return (seller, null);
+                var product = await _repository.GetProductByIdAsync(id);
+
+                try
+                {
+                    if (!model.ProductName.IsNullOrEmpty() &&
+                        !product.ProductName.Equals(model.ProductName)) {
+                        _ = await _repository.GetProductByNameAndSellerIdAsync(model.ProductName!, product.SellerId);
+                        throw new ProductWithNameAndSellerExists(); 
+                    }
+                }
+                catch (ProductNotFoundException) { }
+
+                if (!model.DeletedImagesIds.IsNullOrEmpty()) {
+                    await _productImageService.DeleteProductImagesAsync(model.DeletedImagesIds!);
+                }
+                if (!model.NewImageFiles.IsNullOrEmpty()) {
+                    await _productImageService.AddProductImages(product, model.NewImageFiles!);
+                }
+                await _repository.UpdateProduct(product, model);
+
+                return (true, null);
             }
-            catch (ProductNotFoundException e) { return (null, e); }
-            catch (ProductWithNameAndSellerExists e) { return (null, e); }
-            catch (Exception e) { return (null, e); }
+            catch (ProductNotFoundException e) { return (false, e); }
+            catch (ProductWithNameAndSellerExists e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
         }
+
 
         public async Task<(bool, Exception?)> DeleteProduct(int id)
         {
             try
             {
-                await _repository.DeleteProductAsync(id);
+                var product = await _repository.GetProductByIdAsync(id);
+                await _repository.DeleteProductAsync(product);
                 return (true, null);
             }
             catch (ArgumentException e) { return (false, e); }

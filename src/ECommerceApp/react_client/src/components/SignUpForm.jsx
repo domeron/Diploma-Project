@@ -2,11 +2,11 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { useState, useContext } from "react";
 import { UserContext } from "../App";
-import { EyeOutline } from "styled-icons/evaicons-outline";
-import { EyeOff2 } from "styled-icons/evaicons-solid";
 import { api_UserCreate } from "../api/user_api";
 
-import { Spinner3 } from "styled-icons/evil";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function SignUpForm({setSignInView, setSignUpView}) {
     const { register, handleSubmit, setError, formState: { errors } } = useForm();
@@ -38,7 +38,7 @@ export default function SignUpForm({setSignInView, setSignUpView}) {
             <div className="my-2">
                 <p className="mb-2">Firstname</p>
                 <input type="text" 
-                className="py-1 px-2 w-full rounded-md border border-gray-500"
+                className="py-1 px-2 w-full rounded-sm border border-gray-500"
                 {...register('firstName', {required: 'Please, enter your Name'})}/>
                 <ErrorMessage errors={errors} name="firstName"
                 render={({ message }) => <p className="text-red-500">{message}</p>}/>
@@ -47,7 +47,7 @@ export default function SignUpForm({setSignInView, setSignUpView}) {
             <div className="my-2">
                 <p className="mb-2">Lastname</p>
                 <input type="text" 
-                className="py-1 px-2 w-full rounded-md border border-gray-500"
+                className="py-1 px-2 w-full rounded-sm border border-gray-500"
                 {...register('lastName', {required: 'Please, enter your Last Name'})}/>
                 <ErrorMessage errors={errors} name="lastName"
                 render={({ message }) => <p className="text-red-500">{message}</p>}/>
@@ -56,7 +56,7 @@ export default function SignUpForm({setSignInView, setSignUpView}) {
             <div className="my-2">
                 <p className="mb-2">E-mail</p>
                 <input type="email" 
-                className="py-1 px-2 w-full rounded-md border border-gray-500"
+                className="py-1 px-2 w-full rounded-sm border border-gray-500"
                 {...register('email', {required: 'Please, enter your E-mail'})}/>
                 <ErrorMessage errors={errors} name="email"
                 render={({ message }) => <p className="text-red-500">{message}</p>}/>
@@ -65,16 +65,18 @@ export default function SignUpForm({setSignInView, setSignUpView}) {
             <div className="my-2">
                 <p className="mb-2">Password</p>
                 <input type={viewPassword ? 'text' : 'password'}
-                className="py-1 px-2 mb-2 w-full rounded-md border border-gray-500"
+                className="py-1 px-2 mb-2 w-full rounded-sm border border-gray-500"
                 {...register('password', {required: 'Please, enter your Password'})}/>
-                <div className=" flex gap-1 items-center cursor-pointer hover:text-blue-500"
-                    onClick={() => setViewPassword(!viewPassword)}>
-                        {viewPassword 
-                        ? 
-                        <><EyeOutline className="w-6 h-6"/> <p className="text-sm">Hide Password</p></>
-                        : 
-                        <><EyeOff2 className="w-6 h-6"/> <p className="text-sm">Show Password</p></>
-                        }
+                <div className="flex">
+                    <div className="flex gap-1 items-center cursor-pointer hover:text-blue-500"
+                        onClick={() => setViewPassword(!viewPassword)}>
+                            {viewPassword 
+                            ? 
+                            <><VisibilityIcon className="w-6 h-6"/> <p className="text-sm">Hide Password</p></>
+                            : 
+                            <><VisibilityOffIcon className="w-6 h-6"/> <p className="text-sm">Show Password</p></>
+                            }
+                    </div>
                 </div>
                 
                 <ErrorMessage errors={errors} name="password"
@@ -84,7 +86,7 @@ export default function SignUpForm({setSignInView, setSignUpView}) {
             <div className="my-4">
                 <button type="submit" className={`flex items-center justify-center px-2 h-12 w-full rounded-md bg-blue-500 text-white shadow-md`}>
                     <span className="mx-4">Sign Up</span>
-                    {loading && <Spinner3 className="w-8 h-8 animate-spin "/>}
+                    {loading && <AutorenewIcon className="w-8 h-8 animate-spin "/>}
                 </button>
             </div>
         </form>

@@ -1,122 +1,174 @@
-import {Bars3Icon, ChevronDownIcon, UserCircleIcon} from "@heroicons/react/24/solid"
-import { useContext, useState } from "react";
+
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
-import DropDownMenu from "./elements/DropDownMenu";
-import DropDownMenuItem from "./elements/DropDownMenuItem";
-import { HeartOutlined } from "styled-icons/entypo";
-import { Cart } from "styled-icons/fluentui-system-regular";
-import { SignOut } from "styled-icons/octicons";
+
 import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
 import ProfileImage from "./elements/ProfileImage";
-import { Dashboard, DashboardCustomize } from "styled-icons/material";
+
+import { api_GetAllCategoriesWithChildren } from "../api/category_api";
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ProfileDropdownMenu from "./elements/ProfileDropdownMenu";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuIcon from '@mui/icons-material/Menu';
 
 export default function SubHeader() {
     const {user, setUser} = useContext(UserContext)
     const navigate = useNavigate();
     const [signInView, setSignInView] = useState(false);
     const [signUpView, setSignUpView] = useState(false);
+    const [viewCategories, setViewCategories] = useState(false);
 
     const [viewUserDropDown, setViewUserDropDown] = useState(false);
 
-    function handleSignOut() {
-        setUser(null);
-    }
-
     return (
-        <div className="border-b">
-            <div className="max-w-6xl py-1 mx-auto flex justify-between text-sm">
-                <div className="flex gap-4">
-                    <div className="flex gap-1 items-center">
-                        <Bars3Icon className="w-6"/>
-                        <p>All Category</p>
+        <div className="border-b bg-indigo-900">
+            <div className="max-w-6xl mx-auto flex justify-between text-sm">
+                <div className="flex gap-4 text-white">
+                    <div onClick={() => setViewCategories(true)}
+                    className="py-1 px-2 group flex gap-1 items-center hover:bg-indigo-800 cursor-pointer">
+                        <MenuIcon className="w-6"/>
+                        <p className="">All Category</p>
                     </div>
-                    <div className="flex items-center">
-                        <p>Hot Offers</p>
-                    </div>
-                    <div className="flex items-center">
-                        <p>Gift Boxes</p>
-                    </div>
-                    <div className="flex items-center">
-                        <p>Projects</p>
-                    </div>
-                    <div className="flex items-center gap-2">
+                    <div className="py-1 px-2 flex items-center gap-2 cursor-pointer hover:bg-indigo-800">
                         <p>Help</p>
-                        <ChevronDownIcon className="w-4"/>
+                        <ExpandMoreIcon className="w-4"/>
                     </div>
                 </div>
 
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-2">
+                <div className="flex text-white">
+                    <div className="py-1 px-2 flex items-center gap-2 cursor-pointer hover:bg-indigo-800">
                         <p>English, USD</p>
-                        <ChevronDownIcon className="w-4"/>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <p>Ship to</p>
-                        <ChevronDownIcon className="w-4"/>
+                        <ExpandMoreIcon className="w-4"/>
                     </div>
                     <div onClick={() => navigate('/Cart')}
-                    className="flex px-1 items-center gap-1 hover:bg-gray-100 cursor-pointer hover:text-blue-700">
+                    className="flex py-1 px-2 items-center gap-1 hover:bg-indigo-800 cursor-pointer ">
                         <p>Cart</p>
-                        <Cart className="w-6"/>
+                        <ShoppingCartIcon className="scale-75"/>
                     </div>
 
-                    <div className="flex">
-                        {user ?
-                        <div className="flex items-center gap-1 relative">
-                            {user.profileImagePath ?
-                            <ProfileImage dimension={6} url={user.profileImagePath}/>
-                            :
-                            <UserCircleIcon className="w-6"/>}
-                            <p>{user.firstName}</p>
-                            <ChevronDownIcon 
-                            onClick={() => {setViewUserDropDown(!viewUserDropDown)}}
-                            className="w-4 cursor-pointer"/>
-                            {viewUserDropDown &&
-                            <DropDownMenu>
-                                <DropDownMenuItem url='/Profile'>
-                                    <p>Profile</p>
-                                </DropDownMenuItem>
-                                <DropDownMenuItem url='/Favorites'>
-                                    <p>Favorites</p>
-                                    <HeartOutlined className="w-5"/>
-                                </DropDownMenuItem>
-                                {user.isSeller &&
-                                <DropDownMenuItem url='/SellerDashboard'>
-                                    <p>Seller Dashboard</p>
-                                    <DashboardCustomize className="w-5"/>
-                                </DropDownMenuItem>
-                                }
-                                <DropDownMenuItem handleClick={handleSignOut}>
-                                    <p>Sign Out</p>
-                                    <SignOut className="w-4"/>
-                                </DropDownMenuItem>
-                            </DropDownMenu>
-                            }
-                        </div>
-                        :
-                        <>
-                            <div onClick={() => setSignInView(true)}
-                            className="px-2 flex items-center cursor-pointer hover:text-blue-500">
-                                Sign In
-                            </div>
-                        </>
-                        }
+                    {user ?
+                    <div className="py-1 px-2 flex items-center gap-1 relative hover:bg-indigo-800">
+                        <ProfileDropdownMenu user={user}/>
                     </div>
+                    :
+                    <div onClick={() => setSignInView(true)}
+                    className="py-1 px-2 flex items-center cursor-pointer hover:bg-indigo-800">
+                        Sign In
+                    </div>}
                 </div>
             </div>
             {(signInView || signUpView) && 
                 <div className="z-10 fixed top-0 bottom-0 right-0 left-0 py-16">
-                    <div className="fixed right-0 left-0 max-w-sm mx-auto py-6 px-8 bg-white rounded-xl">
+                    <div className="fixed right-0 left-0 max-w-sm mx-auto py-6 px-8 bg-white rounded">
                         {signInView && <SignInForm setSignInView={setSignInView} setSignUpView={setSignUpView}/>}
                         {signUpView && <SignUpForm setSignInView={setSignInView} setSignUpView={setSignUpView}/>}
                     </div>
                     <div onClick={() => {setSignUpView(false); setSignInView(false)}}
-                    className="-z-20 absolute top-0 right-0 left-0 bottom-0 bg-[rgb(60,60,60,0.4)]"> 
+                    className="-z-20 absolute top-0 right-0 left-0 bottom-0 bg-[rgba(0,0,0,0.41)]"> 
                     </div>
                 </div>
             }
+            {viewCategories &&
+                <CategoriesView setViewCategories={setViewCategories}/>
+            }
+        </div>
+    );
+}
+
+function CategoriesView({setViewCategories}) {
+    const [focusedCategory, setFocusedCategory] = useState();
+    const [focusedSubCategory, setFocusedSubCategory] = useState();
+    const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        api_GetAllCategoriesWithChildren()
+        .then(setCategories)
+        .catch(err => console.log(err));
+    }, []);
+
+    function selectCategory(categoryId) {
+        navigate(`/Category/${categoryId}`);
+        setViewCategories(false)
+    }
+
+    return (
+        // onMouseLeave={() => setViewCategories(false)}
+        <div 
+        className="z-30 flex absolute top-0 bottom-0 right-0 left-0">
+            <div className="w-64 flex flex-col border-r-2 bg-white">
+            {categories.map((cat, index) => {
+                return (
+                    <div
+                    onClick={() => selectCategory(cat.id)}
+                    onMouseEnter={() => setFocusedCategory(cat)}
+                    key={index} className={`py-3 pl-4 pr-2 flex justify-between items-center cursor-pointer
+                    ${focusedCategory && focusedCategory.id === cat.id && 'bg-gray-200'}`}>
+                        <p>{cat.categoryName}</p>
+                        <ChevronRightIcon className="w-5"/>
+                    </div>
+                );
+            })}
+            </div>
+            {focusedCategory &&
+            <div className="w-64 flex flex-col border-r-2 bg-white">
+                {focusedCategory.childCategories.map((cat, index) => {
+                    return (
+                        <div
+                        onClick={() => selectCategory(cat.id)}
+                        onMouseEnter={() => setFocusedSubCategory(cat)}
+                        key={index} className="py-3 pl-4 pr-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
+                            <p>{cat.categoryName}</p>
+                            {cat.childCategories.length > 0 && 
+                            <ChevronRightIcon className="w-5"/>
+                            }
+                        </div>
+                    );
+                })}
+            </div>
+            }
+
+            {focusedSubCategory && focusedSubCategory.childCategories.length > 0 && 
+            <div className="w-64 flex flex-col border-r-2 bg-white">
+                {focusedSubCategory.childCategories.map((cat, index) => {
+                    return (
+                        <div
+                        onClick={() => selectCategory(cat.id)}
+                        key={index} className="py-3 pl-4 pr-2 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
+                            <p>{cat.categoryName}</p>
+                        </div>
+                    );
+                })}
+            </div>
+            }
+            <div onClick={() => setViewCategories(false)}
+            className="grow bg-[rgb(60,60,60,0.4)]"></div>
+            {/* {focusedCategory &&
+            <div className="py-4 px-6 grow flex flex-wrap items-start">
+                {focusedCategory.childCategories.map((sub, index) => {
+                    return (
+                        <div key={index} className="flex flex-col gap-2 w-1/4 border cursor-pointer">
+                            <p 
+                            onClick={() => selectCategory(sub.id)}
+                            className="font-semibold hover:text-blue-500"
+                            >{sub.categoryName}</p>
+                            {sub.childCategories.map((subsub, ind) => {
+                                return (
+                                    <p key={ind} 
+                                    onClick={() => selectCategory(subsub.id)}
+                                    className="hover:text-blue-500 cursor-pointer"
+                                    >{subsub.categoryName}</p>
+                                );
+                            })}
+                        </div>
+                    );
+                })}
+            </div>
+            } */}
         </div>
     );
 }

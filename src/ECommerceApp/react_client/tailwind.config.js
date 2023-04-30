@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     fontFamily: {
       sans: [
-        'Schibsted Grotesk, sans-serif'
+        'Source Sans Pro'
       ],
     },
   }

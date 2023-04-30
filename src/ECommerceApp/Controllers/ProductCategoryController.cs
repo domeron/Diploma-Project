@@ -38,5 +38,41 @@ namespace ECommerceApp.Controllers
             else if (e is ProductCategoryNotFound) return BadRequest("Category not found");
             else return StatusCode(500, e.StackTrace);
         }
+
+        [HttpGet]
+        [Route("WithParents/{categoryId}")]
+        public async Task<IActionResult> GetCategoryByIdWithParentsAsync(int categoryId)
+        {
+            (ProductCategory? category, Exception? e) = await _service.GetCategoryByIdWithParentsAsync(categoryId);
+
+            if (category != null && e == null)
+                return Ok(new ProductCategoryViewModel(category));
+            else if (e is ProductCategoryNotFound) return BadRequest("Category not found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpGet]
+        [Route("WithChildren/{categoryId}")]
+        public async Task<IActionResult> GetCategoryByIdWithChildrenAsync(int categoryId)
+        {
+            (ProductCategory? category, Exception? e) = await _service.GetCategoryByIdWithChildrenAsync(categoryId);
+
+            if (category != null && e == null)
+                return Ok(new ProductCategoryViewModel(category));
+            else if (e is ProductCategoryNotFound) return BadRequest("Category not found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpGet]
+        [Route("WithParentsAndChildren/{categoryId}")]
+        public async Task<IActionResult> GetCategoryByIdWithParentsAndChildrenAsync(int categoryId)
+        {
+            (ProductCategory? category, Exception? e) = await _service.GetCategoryByIdWithParentsAndChildrenAsync(categoryId);
+
+            if (category != null && e == null)
+                return Ok(new ProductCategoryViewModel(category));
+            else if (e is ProductCategoryNotFound) return BadRequest("Category not found");
+            else return StatusCode(500, e.StackTrace);
+        }
     }
 }
