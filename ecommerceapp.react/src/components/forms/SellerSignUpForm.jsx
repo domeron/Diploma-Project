@@ -6,7 +6,7 @@ import { api_CreateSeller } from "../../API/SellerAPI";
 
 export default function SellerSignUpForm({setSigningUp, loadSeller}) {
     const {user, setUser} = useContext(UserContext)
-    const { register, handleSubmit, watch, setError, formState: { errors } } = useForm({
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
             sellerEmail: user.email,
             sellerName: user.firstName,

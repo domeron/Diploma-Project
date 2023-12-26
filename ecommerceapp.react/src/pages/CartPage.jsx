@@ -42,7 +42,7 @@ export default function CartPage() {
     }
 
     function handleCheckout() {
-        let productIds = products.map((p) => p.productId)
+        // let productIds = products.map((p) => p.productId)
         navigate(`/Checkout`, {state: {products: products}});
     }
 

@@ -14,7 +14,8 @@ export default function ProductListItem({product, onClick, isFavorite, onAddToFa
             <div onClick={onClick}
             className="w-36 h-36 border-r border-gray-300 cursor-pointer overflow-hidden
             flex items-center justify-center">
-                <img className="object-fill hover:scale-125 transition-all" 
+                <img alt=''
+                className="object-fill hover:scale-125 transition-all" 
                 src={`https://localhost:7077/${product.frontImagePath}`} />
             </div>
 

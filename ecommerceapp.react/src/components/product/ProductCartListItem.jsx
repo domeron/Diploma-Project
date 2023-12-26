@@ -12,7 +12,8 @@ export default function ProductCartListItem({product, onProductDeleteFromCart}) 
             <div onClick={() => {}}
             className="w-32 h-32 shrink-0 border-r border-gray-300 cursor-pointer hover:p-1 transition-all
             flex items-center justify-center">
-                <img className="object-contain h-full w-full" 
+                <img alt={''}
+                className="object-contain h-full w-full" 
                 src={`https://localhost:7077/${product.frontImagePath}`} />
             </div>
     

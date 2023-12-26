@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { api_GetAllCategoriesWithChildren } from "../../API/ProductCategoryAPI";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { ProductListContext } from "../../context/ProductListContext";
 
@@ -19,10 +18,10 @@ export default function CategoriesDropDown({categories, firstExpanded=false})
 
     useEffect(() => {
         console.log(selectedId);
-        if(selectedId != 0)
+        if(selectedId !== 0)
             setCategoryId(selectedId)
         console.log('firstExpanded: ' + firstExpanded)
-    }, [selectedId])
+    }, [selectedId, setCategoryId, firstExpanded])
     
 
     return (
@@ -31,7 +30,7 @@ export default function CategoriesDropDown({categories, firstExpanded=false})
             selectedId={selectedId} setSelectedId={setSelectedId} level={1}/>}
 
             {categories.map((category, index) => 
-                <CategoryTab category={category} key={index} selectedId={selectedId} setSelectedId={setSelectedId} level={1} expanded={firstExpanded && index == 0}/>)}
+                <CategoryTab category={category} key={index} selectedId={selectedId} setSelectedId={setSelectedId} level={1} expanded={firstExpanded && index === 0}/>)}
         </div>
     );
 }

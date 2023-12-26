@@ -35,7 +35,7 @@ export default function CategoryBar({imgSrc, categoryId}) {
         <div className="flex my-8 bg-white">
             <div onClick={() => navigate(`/Category/${category.id}`)}
             className="rounded-l group w-64 h-64 shrink-0 overflow-hidden relative cursor-pointer">
-                <img src={imgSrc} alt="category image"
+                <img src={imgSrc} alt={''}
                 className="rounded-l w-full h-full scale-100 object-cover group-hover:scale-125 ease-in-out duration-300"/>
                 <div className="rounded-l absolute top-0 bottom-0 right-0 left-0 bg-[rgba(0,0,0,0.12)]">
                     <div className="px-6 py-4 font-semibold">
@@ -55,7 +55,8 @@ export default function CategoryBar({imgSrc, categoryId}) {
                                 <p>$ {p.priceUSD}</p>
                             </div>
                             <div className="w-20 h-20 shrink-0 border-black ">
-                                <img src={`https://localhost:7077/${p.frontImagePath}`} className="w-full h-full object-cover"/>
+                                <img alt={''}
+                                src={`${process.env.REACT_APP_BASEURL}/${p.frontImagePath}`} className="w-full h-full object-cover"/>
                             </div>
                         </div>
                     )

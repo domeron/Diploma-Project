@@ -6,7 +6,7 @@ import CategoriesDropDown from "../components/common/CategoriesDropDown";
 import { api_GetProducts } from "../API/ProductAPI";
 import ProductListView from "../components/product/ProductListView";
 import Loading from "../components/common/Loading";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductListContext } from "../context/ProductListContext";
 import ListOptions from "../components/list_products/ListOptions";
 import { api_GetAllCategoriesWithChildren } from "../API/ProductCategoryAPI";
@@ -31,7 +31,7 @@ export default function SearchPage() {
     useEffect(() => {
         //console.log(location.state)
         console.log(startPattern)
-        if(startPattern != "")
+        if(startPattern !== "")
             Search({StartPattern: startPattern, CategoryId: categoryId, SortOption: sortOption});
     }, [startPattern, categoryId, sortOption])
 

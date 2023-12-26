@@ -1,5 +1,4 @@
 import { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import TopHeader from "../components/common/TopHeader";
 import Header from "../components/common/Header";
@@ -9,7 +8,6 @@ import SellerInformation from "../components/seller/SellerInformation";
 import ShippingAddress from "../components/profile/ShippingAddress";
 
 export default function ProfilePage() {
-    const navigate = useNavigate();
     const {user} = useContext(UserContext);
     const [selectedSection, setSelectedSection] = useState(0);
 

@@ -6,7 +6,7 @@ import { UserContext } from "../../App";
 import { ErrorMessage } from "@hookform/error-message";
 
 export default function ReviewForm({product, onCreate, setWritingReview}) {
-    const {user, setUser} = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const { register, handleSubmit, setValue, clearErrors, watch,setError, formState: { errors } } = useForm();
     const watchRating = watch('rating');
 

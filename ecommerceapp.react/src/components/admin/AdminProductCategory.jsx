@@ -17,6 +17,7 @@ export default function AdminProductCategory() {
         await api_GetAllCategories()
         .then((data) => {
             setCategories(data);
+            console.log(data)
         })
         .catch(err => console.log(err.response))
     }

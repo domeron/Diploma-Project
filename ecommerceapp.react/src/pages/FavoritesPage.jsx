@@ -7,11 +7,10 @@ import { useNavigate } from "react-router-dom";
 import BackButton from "../components/common/BackButton";
 import { api_GetProductsInUserFavorites } from "../API/UserAPI";
 import { ProductListContext } from "../context/ProductListContext";
-import CategoriesDropDown from "../components/common/CategoriesDropDown";
 import ListOptions from "../components/list_products/ListOptions";
 import ProductListView from "../components/product/ProductListView";
 import Loading from "../components/common/Loading";
-import { Favorite, FavoriteBorder, ShoppingBasket } from "@mui/icons-material";
+import { Favorite } from "@mui/icons-material";
 
 export default function FavoritesPage() {
     const {user} = useContext(UserContext)

@@ -1,21 +1,19 @@
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 
 import SignUpForm from "../forms/SignUpForm";
 import SignInForm from "../forms/SignInForm";
 import ProfileDropdownMenu from "../profile/ProfileDropdownMenu";
-import { FavoriteBorder, ShoppingBasket, ShoppingCart } from "@mui/icons-material";
+import { FavoriteBorder, ShoppingBasket } from "@mui/icons-material";
 import CategoriesMenu from "./CategoriesMenu";
 
 export default function TopHeader() {
-    const {user, setUser} = useContext(UserContext)
+    const {user} = useContext(UserContext)
     const navigate = useNavigate();
     const [signInView, setSignInView] = useState(false);
     const [signUpView, setSignUpView] = useState(false);
-
-    const [viewUserDropDown, setViewUserDropDown] = useState(false);
 
     return (
         <div className="border-b bg-indigo-900">

@@ -39,7 +39,8 @@ export default function DealsAndOffers() {
                         ${index !== 0 && 'border-l'}`}
                         key={index}>
                             <div className="w-28 h-28">
-                                <img src={`https://localhost:7077/${p.frontImagePath}`} className="w-full h-full object-cover"/>
+                                <img alt={''}
+                                src={`${process.env.REACT_APP_BASEURL}/${p.frontImagePath}`} className="w-full h-full object-cover"/>
                             </div>
 
                             <p className="my-2 w-full h-7 text-ellipsis overflow-hidden">{p.productName}</p>

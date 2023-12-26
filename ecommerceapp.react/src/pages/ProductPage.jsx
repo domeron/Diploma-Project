@@ -9,11 +9,9 @@ import { UserContext } from "../App";
 import StarRating from "../components/product/StarRating";
 
 import PaymentIcon from '@mui/icons-material/Payment';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import PriceTag from "../components/product/ProductPriceTag";
 import BackButton from "../components/common/BackButton";
-import { api_AddProductToUserCart, api_AddProductToUserFavorites, api_IsProductExistInUserCart, api_IsProductExistInUserFavorites, api_RemoveProductFromUserCart, api_RemoveProductFromUserFavorites } from "../API/UserAPI";
+import { api_AddProductToUserCart, api_AddProductToUserFavorites, api_IsProductExistInUserCart, api_IsProductExistInUserFavorites, api_RemoveProductFromUserFavorites } from "../API/UserAPI";
 import { api_GetProductById } from "../API/ProductAPI";
 import { Favorite, FavoriteBorder, ShoppingBasket } from "@mui/icons-material";
 
@@ -147,7 +145,7 @@ export default function ProductPage() {
                                     <p className="text">Rating:</p>
                                     <div className="flex items-start gap-1">
                                         <p className="text-xl">{product.rating}</p>
-                                        <StarRating rating={product.rating} dimension={24}/>
+                                        <StarRating rating={product.rating} dimension={'24'}/>
                                         <p className="text-blue-500">({product.reviewsCount})</p>
                                     </div>
                                 </div>

@@ -16,7 +16,8 @@ export default function ProductGridItem({product, onClick, isFavorite, onAddToFa
             onClick={onClick}
             className={`h-52 group/img_wrap w-full overflow-hidden border-b border-gray-300 flex items-center cursor-pointer relative`}>
 
-                <img className="object-cover h-full w-full group-hover/img_wrap:scale-125 ease-in-out duration-200" 
+                <img alt={''}
+                className="object-cover h-full w-full group-hover/img_wrap:scale-125 ease-in-out duration-200" 
                 src={`https://localhost:7077/${product.frontImagePath}`} />
 
                 <div title="Add To Favorites" 

@@ -12,7 +12,7 @@ export default function ListOptions() {
             <div className="grow">
                 <SearchListInput/>
             </div>
-            {startPattern && startPattern != '' &&
+            {startPattern && startPattern !== '' &&
                 <div className="flex gap-2">
                     <GridListSwitch/>
                     <SortSelect/>

@@ -1,5 +1,5 @@
-import { GridView, TableRows, ViewList, ViewStream } from "@mui/icons-material";
-import { useContext, useEffect, useState } from "react";
+import { GridView, TableRows} from "@mui/icons-material";
+import { useContext } from "react";
 import { ProductListContext } from "../../context/ProductListContext";
 
 export default function GridListSwitch() {

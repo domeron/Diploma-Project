@@ -22,8 +22,8 @@ export default function ProductImagesView({setImage=null, customizing=false, pro
             <>
             {selectedImage &&
             <div className="w-96 h-96 border border-gray-400">
-                <img src={`https://localhost:7077/${focusedImage !== null ? focusedImage[1] : selectedImage[1]}`} 
-                alt='image' className="w-full h-full object-contain"/>
+                <img src={`${process.env.REACT_APP_BASEURL}/${focusedImage !== null ? focusedImage[1] : selectedImage[1]}`} 
+                alt='' className="w-full h-full object-contain"/>
             </div>}
 
             {images.length > 0 && selectedImage &&
@@ -42,8 +42,8 @@ export default function ProductImagesView({setImage=null, customizing=false, pro
 
             {selectedImage &&
             <div className="w-[28rem] h-[28rem] border border-gray-400">
-                <img src={`https://localhost:7077/${focusedImage !== null ? focusedImage[1] : selectedImage[1]}`} 
-                alt='image' className="w-full h-full object-contain"/>
+                <img src={`${process.env.REACT_APP_BASEURL}/${focusedImage !== null ? focusedImage[1] : selectedImage[1]}`} 
+                alt='' className="w-full h-full object-contain"/>
             </div>}
             </>
             }
@@ -60,7 +60,7 @@ function ProductImageThumbnail({image, choosedImage, setChoosedImage, setFocused
         className={`w-16 h-16 relative border border-gray-400 cursor-pointer hover:border-blue-500 `}>
             {choosedImage[0] !== image[0] && 
             <div className="w-full h-full bg-[rgb(60,60,60,0.3)] hover:bg-[rgb(60,60,60,0.0)] absolute top-0"></div>}
-            <img src={`https://localhost:7077/${image[1]}`} alt="img thumbnail" className="w-full h-full object-contain"/>
+            <img src={`${process.env.REACT_APP_BASEURL}/${image[1]}`} alt="img thumbnail" className="w-full h-full object-contain"/>
         </div>
     );
 }

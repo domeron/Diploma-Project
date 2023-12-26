@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AdminPage from './pages/AdminPage';
 import AdminProductCategory from "./components/admin/AdminProductCategory";
 import HomePage from "./pages/HomePage";
 import React, { useState } from "react";
@@ -11,7 +10,6 @@ import CheckoutPage from "./pages/CheckoutPage";
 import SearchPage from "./pages/SearchPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import CategoryPage from "./pages/CategoryPage";
-import Footer from "./components/common/Footer";
 
 export const UserContext = React.createContext(null);
 

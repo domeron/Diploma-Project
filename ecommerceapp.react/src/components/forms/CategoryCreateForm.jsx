@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { api_CreateProductCategory } from "../../API/ProductCategoryAPI";
 
 export default function CategoryCreateForm({categories}) {
-    const {register, handleSubmit, setError, formState: {errors}} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
 
     async function handleCreateCategory(data) {
         console.log(data);

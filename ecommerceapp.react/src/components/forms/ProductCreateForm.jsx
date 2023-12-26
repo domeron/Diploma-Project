@@ -8,7 +8,7 @@ import { SellerContext } from "../../pages/SellerDashboardPage";
 
 export default function ProductCreateForm({onCreate, categories}) {
     const {seller} = useContext(SellerContext);
-    const { register, handleSubmit, watch, setValue, setError, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
     const watchImages = watch('imageFiles')
     
     useEffect(() => {
@@ -121,7 +121,7 @@ function ImagesView({imageFiles}) {
             <>
             <div className="w-96 h-96 border border-gray-400">
                 <img src={images[focusedIndex > -1 ? focusedIndex : selectedIndex]} 
-                alt='image' className="w-full h-full object-contain"/>
+                alt='focused_image' className="w-full h-full object-contain"/>
             </div>
             
             <div className="grow flex flex-wrap gap-1">
@@ -177,17 +177,18 @@ export function CategoryChoose({disabled=false, categories, setValue=null, initi
                 }
             })
         }
-    }, [initialCategoryId])
+    }, [categories, initialCategoryId])
 
     useEffect(() => {
-        if(setValue) {
-            if(subsubCategory !== null) {
-                setValue('categoryId', subsubCategory.id)
-            } else if (subCategory !== null) {
-                setValue('categoryId', subCategory.id)
-            } else if(topCategory !== null) {
-                setValue('categoryId', topCategory.id)
-            }
+        console.log('a')
+        if(subsubCategory != null) {
+            setValue('categoryId', subsubCategory.id)
+        } else if (subCategory != null) {
+            setValue('categoryId', subCategory.id)
+            console.log(subCategory)
+        } else if(topCategory != null) {
+            setValue('categoryId', topCategory.id)
+            console.log(topCategory)
         }
     }, [topCategory, subCategory, subsubCategory])
 
@@ -235,7 +236,7 @@ export function CategoryChoose({disabled=false, categories, setValue=null, initi
             <select value={subCategory ? subCategory.id : -1} disabled={disabled}
             className="py-1 px-2 border border-gray-400 rounded-sm"
             onChange={(e) => {
-                if(e.target.value != -1)
+                if(e.target.value !== -1)
                     setSubCategory(topCategory.childCategories.find((c) => c.id == e.target.value))
                 else {
                     setSubCategory(null)
@@ -253,7 +254,7 @@ export function CategoryChoose({disabled=false, categories, setValue=null, initi
             <select value={subsubCategory ? subsubCategory.id : -1} disabled={disabled}
             className="py-1 px-2 border border-gray-400 rounded-sm"
             onChange={(e) => {
-                if(e.target.value != -1)
+                if(e.target.value !== -1)
                     setSubSubCategory(subCategory.childCategories.find((c) => c.id == e.target.value))
                 else {
                     setSubSubCategory(null)

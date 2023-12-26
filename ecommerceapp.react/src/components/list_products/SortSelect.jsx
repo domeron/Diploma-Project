@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ProductListContext } from "../../context/ProductListContext";
 
 export default function SortSelect() {

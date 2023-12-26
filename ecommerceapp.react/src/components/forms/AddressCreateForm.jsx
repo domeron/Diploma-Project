@@ -8,12 +8,12 @@ import { api_CreateShippingAddress } from "../../API/UserAPI";
 export default function AddressCreateForm({onCreate}) {
     const {user} = useContext(UserContext)
     const [countries, setCountries] = useState([])
-    const { register, handleSubmit, setValue, getValues,setError, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
     useEffect(() => {
         loadCountries();
         setValue('userId', user.userId)
-    }, [])
+    }, [user.userId, setValue])
 
     async function loadCountries() {
         await api_GetCountries()

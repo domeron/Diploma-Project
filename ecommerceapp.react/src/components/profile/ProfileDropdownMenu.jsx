@@ -1,8 +1,5 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import LogoutIcon from '@mui/icons-material/Logout';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import GridViewIcon from '@mui/icons-material/GridView';
-import { Avatar, Divider, Fade, ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { Fade, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useState, useContext } from "react";
 
 import { useNavigate } from "react-router-dom";

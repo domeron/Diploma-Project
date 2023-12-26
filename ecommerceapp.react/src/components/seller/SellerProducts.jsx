@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import { api_GetProducts, api_GetSellerAllProducts } from "../../API/ProductAPI";
+import { api_GetProducts } from "../../API/ProductAPI";
 import { api_GetAllCategoriesWithChildren } from "../../API/ProductCategoryAPI";
 import { useNavigate } from "react-router-dom";
 import ProductCreateForm from "../forms/ProductCreateForm";
 import ProductEditForm from "../forms/ProductEditForm";
 import BackButton from "../common/BackButton";
 import { SellerContext } from "../../pages/SellerDashboardPage";
-import { Add, AddCircleOutline } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 
 export default function SellerProducts() {
     const {seller} = useContext(SellerContext);
@@ -114,8 +114,9 @@ function SellerProductListItem({product, setEditingProductId}) {
             <div
             className="w-36 h-36 border-r border-gray-300 cursor-pointer hover:p-1 transition-all
             flex items-center justify-center">
-                <img className="object-cover h-full w-full" 
-                src={`https://localhost:7077/${product.frontImagePath}`} />
+                <img alt={''}
+                className="object-cover h-full w-full" 
+                src={`${process.env.REACT_APP_BASEURL}/${product.frontImagePath}`} />
             </div>
             <div className="py-2 px-4">
                 <p className="text font-semibold">{product.productName}</p>

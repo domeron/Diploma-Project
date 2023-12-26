@@ -20,7 +20,7 @@ export default function CheckoutPage() {
     const [shippingTotal, setShippingTotal] = useState(0)
 
     const [success, setSuccess] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('');
+    const [setErrorMessage] = useState('');
     const [orderId, setOrderId] = useState()
     const [paymentTime, setPaymentTime] = useState('');
 
@@ -138,7 +138,8 @@ function ProductCheckoutListItem({product, index}) {
             <div onClick={() => {}}
             className="w-36 h-36 border shrink-0 border-gray-400 cursor-pointer
             flex items-center justify-center">
-                <img className="object-contain h-full w-full" 
+                <img alt=''
+                className="object-contain h-full w-full" 
                 src={`https://localhost:7077/${product.frontImagePath}`} />
             </div>
     
@@ -155,7 +156,6 @@ function ProductCheckoutListItem({product, index}) {
 }
 
 function ShipSection() {
-    const [addingAddress, setAddingAddress] = useState(false);
     const [address, setAddress] = useState(null);
     const {user} = useContext(UserContext);
 

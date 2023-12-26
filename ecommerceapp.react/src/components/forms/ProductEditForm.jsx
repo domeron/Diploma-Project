@@ -72,7 +72,7 @@ export default function ProductEditForm({productId, categories}) {
 }
 
 function EditField(props) {
-    const { register, handleSubmit, watch, getValues, setValue, setError, formState: { errors } } = useForm();
+    const { register, handleSubmit, getValues, setValue, formState: { errors } } = useForm();
     const [editing, setEditing] = useState(false);
 
     useEffect(() => {
@@ -167,7 +167,7 @@ function EditCategoryField(props) {
 }
 
 function EditImages(props) {
-    const {register, watch, handleSubmit, getValues, setValue, formState: { errors } } = useForm();
+    const {register, watch, handleSubmit, formState: { errors } } = useForm();
     const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [addingNewImages, setAddingNewImages] = useState(false);

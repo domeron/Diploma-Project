@@ -6,7 +6,6 @@ import { ErrorMessage } from "@hookform/error-message";
 
 export default function SignInForm({setSignInView, setSignUpView}) {
     const {register, handleSubmit, setError, formState: {errors}} = useForm();
-    const [viewPassword, setViewPassword] = useState(false);
     const {setUser} = useContext(UserContext)
     const [loading, setLoading] = useState(false);
 
@@ -21,9 +20,9 @@ export default function SignInForm({setSignInView, setSignUpView}) {
         })
         .catch((err) => {
             console.log(err.response)
-            if(err.response.data == 'User with provided email is not found.')
+            if(err.response.data === 'User with provided email is not found.')
                 setError('email', { type: 'custom', message: err.response.data });
-            if(err.response.data == 'Wrong password')
+            if(err.response.data === 'Wrong password')
                 setError('password', { type: 'custom', message: err.response.data });
         })
         setLoading(false);

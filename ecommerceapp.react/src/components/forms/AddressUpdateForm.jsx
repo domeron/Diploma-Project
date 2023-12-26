@@ -3,12 +3,12 @@ import { UserContext } from "../../App";
 import { useForm } from "react-hook-form";
 import { api_GetCountries } from "../../API/CountryAPI";
 import { ErrorMessage } from "@hookform/error-message";
-import { api_CreateShippingAddress, api_UpdateShippingAddress } from "../../API/UserAPI";
+import { api_UpdateShippingAddress } from "../../API/UserAPI";
 
 export default function AddressUpdateForm({onUpdate, address}) {
     const {user} = useContext(UserContext)
     const [countries, setCountries] = useState([])
-    const { register, handleSubmit, setValue, watch, getValues,setError, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
         defaultValues: {
             addressId: address.id,
             countryId: address.countryId,
@@ -29,7 +29,7 @@ export default function AddressUpdateForm({onUpdate, address}) {
         if(user != null)
             setValue('userId', user.userId)
         console.log(watchCountryId)
-    }, [])
+    }, [setValue, user.userId, watchCountryId])
 
     async function loadCountries() {
         await api_GetCountries()

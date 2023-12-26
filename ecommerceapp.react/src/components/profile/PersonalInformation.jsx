@@ -127,10 +127,10 @@ function FieldEditForm({fieldName, setEditing}) {
         <form className="flex justify-between gap-4 w-100"
         onSubmit={handleSubmit(handleSaveEdit)}>
             <input className="p-1 grow border border-gray-300"
-            type={  fieldName === 'email' && 'email' ||
-                    fieldName === 'firstName' && 'text' ||
-                    fieldName === 'lastName' && 'text' ||
-                    fieldName === 'phoneNumber' && 'text'}
+            type={  (fieldName === 'email' && 'email') ||
+                    (fieldName === 'firstName' && 'text') ||
+                    (fieldName === 'lastName' && 'text') ||
+                    (fieldName === 'phoneNumber' && 'text')}
             {...register(fieldName, {required:'Please provide input'})}/>
             <ErrorMessage errors={errors} name={fieldName}
             render={({ message }) => <p className="text-red-500">{message}</p>}/>

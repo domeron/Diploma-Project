@@ -3,7 +3,7 @@ import Footer from "../components/common/Footer";
 import Header from "../components/common/Header";
 import TopHeader from "../components/common/TopHeader";
 import { useLocation, useNavigate } from "react-router-dom";
-import { api_GetCategoryById, api_GetCategoryByIdWithChildren } from "../API/ProductCategoryAPI";
+import { api_GetCategoryByIdWithChildren } from "../API/ProductCategoryAPI";
 import { ProductListContext } from "../context/ProductListContext";
 import ListOptions from "../components/list_products/ListOptions";
 import Loading from "../components/common/Loading";
@@ -25,7 +25,7 @@ export default function CategoryPage() {
     const [loading, setLoading] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
     const [topRatedProducts, setTopProducts] = useState([]);
-    const [recentlyAddedProducts, setRecentlyAddedProducts] = useState([])
+    const [setRecentlyAddedProducts] = useState([])
     const [userFavoritesIds, setUserFavoritesIds] = useState([])
 
     const [categoryId, setCategoryId] = useState()
@@ -41,7 +41,7 @@ export default function CategoryPage() {
 
     useEffect(() => {
         console.log(startPattern)
-        if(startPattern != "")
+        if(startPattern !== "")
             Search({StartPattern: startPattern, CategoryId: categoryId, SortOption: sortOption});
     }, [startPattern, sortOption, categoryId])
 
@@ -108,7 +108,7 @@ export default function CategoryPage() {
     async function handleRemoveFromFavorites(productId) {
         await api_RemoveProductFromUserFavorites(user.userId, productId)   
         .then((data) => {
-            if(userFavoritesIds.indexOf(productId) != -1)
+            if(userFavoritesIds.indexOf(productId) !== -1)
                 setUserFavoritesIds(current => current.filter(id => {return id !== productId}))
         }).catch(err => console.log(err))
         
@@ -153,7 +153,7 @@ export default function CategoryPage() {
                         <div className="grow">
                             <ListOptions/>
                             
-                            {(startPattern != '') ?
+                            {(startPattern !== '') ?
                             (loading ? 
                                 <Loading/> :
                                 <ProductListView/>

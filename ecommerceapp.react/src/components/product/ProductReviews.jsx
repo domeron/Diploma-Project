@@ -1,13 +1,9 @@
-import { useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
 import { useContext, useEffect, useState } from "react";
-import { api_CreateReview, api_GetAllReviewsAboutProduct } from "../../API/ProductReviewsAPI";
+import { api_GetAllReviewsAboutProduct } from "../../API/ProductReviewsAPI";
 import StarRating from "./StarRating";
 import { UserContext } from "../../App";
-import ProfileImage from "../profile/ProfileImage";
 import ReviewForm from "../forms/ReviewForm";
 import ProductReviewItem from "./ProductReviewItem";
-import { ReviewListContext } from "../../context/ReviewListContext";
 
 export default function ProductReviews({product, onAdd}) {
     const [reviews, setReviews] = useState([]);
@@ -18,7 +14,7 @@ export default function ProductReviews({product, onAdd}) {
 
     useEffect(() => {
         console.log(sortOption)
-        if(product !== null && sortOption != -1) {
+        if(product !== null && sortOption !== -1) {
             loadProductReviews({productId: product.productId, sortOption: sortOption});
         }
     }, [product, sortOption])

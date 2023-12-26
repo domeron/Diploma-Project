@@ -53,7 +53,7 @@ export default function CategoriesMenu({isShowing}) {
                                 setFocusedSubCategory(null)
                             }}
                             className={`p-3 min-w-[12rem] text-base hover:bg-gray-200 border-b border-b-gray-300 last:border-b-0
-                            ${focusedTopCategory && (focusedTopCategory.id == cat.id && 'bg-gray-200')}`}>   
+                            ${focusedTopCategory && (focusedTopCategory.id === cat.id && 'bg-gray-200')}`}>   
                                 {cat.categoryName}
                             </li>
                         );
@@ -69,7 +69,7 @@ export default function CategoriesMenu({isShowing}) {
                                 onClick={() => handleClick(sub)}
                                 onMouseOver={() => setFocusedSubCategory(sub)}
                                 className={`p-3 min-w-[12rem] text-base hover:bg-gray-200 border-b border-b-gray-300 last:border-b-0
-                                ${focusedSubCategory && (focusedSubCategory.id == sub.id && 'bg-gray-200')}`}>
+                                ${focusedSubCategory && (focusedSubCategory.id === sub.id && 'bg-gray-200')}`}>
                                     {sub.categoryName}
                                 </li>
                             );

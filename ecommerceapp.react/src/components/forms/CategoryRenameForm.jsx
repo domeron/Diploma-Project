@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form";
-import { api_RenameProductCategory, api_UpdateProductCategory } from "../../API/ProductCategoryAPI";
+import { api_RenameProductCategory } from "../../API/ProductCategoryAPI";
 import { useEffect, useState } from "react";
 
 export default function CategoryRenameForm({categories}) {
-    const {register, handleSubmit, setError, setValue,watch, formState: {errors}} = useForm();
+    const {register, handleSubmit, setValue,watch, formState: {errors}} = useForm();
     const watchCategory = watch('CategoryId', 0)
     const [category, setCategory] = useState(null)
 
     useEffect(() => {
-        if(watchCategory != 0)
-            setCategory(categories.find(e => e.id == watchCategory))
+        if(watchCategory !== 0)
+            setCategory(categories.find(e => e.id === watchCategory))
     }, [watchCategory])
 
     useEffect(() => {
